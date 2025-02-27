@@ -1,0 +1,14 @@
+opencv-python
+numpy
+tensorflow
+keras
+imutils
+matplotlib
+scikit-learn
+pandas
+dlib
+face_recognition
+pickle5
+torch
+torchvision
+datetime
