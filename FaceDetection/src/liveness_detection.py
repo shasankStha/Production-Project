@@ -23,6 +23,6 @@ def detect_liveness(frame, model):
 
     # Predict using the model
     prediction = model.predict(face_resized)[0][0]
-    label = "Real" if prediction > 0.4 else "Fake"
+    label = "Real" if prediction > 0.5 else "Fake"
 
     return label, (x, y, w, h)
