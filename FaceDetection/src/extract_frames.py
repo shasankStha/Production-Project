@@ -4,6 +4,19 @@ import os
 VIDEO_FOLDER = "archive/files"
 OUTPUT_FOLDER = "processed_dataset"
 
+# def should_skip_rotation(video_file):
+#     return video_file in [f"{i}.mp4" for i in range(10)]
+
+# def rotate_frame_if_needed(frame, video_file):
+
+#     if should_skip_rotation(video_file):
+#         return frame
+
+#     height, width = frame.shape[:2]
+#     if width > height:  
+#         return cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) 
+#     return frame
+
 def extract_frames():
     if os.path.exists(OUTPUT_FOLDER):
         print("✅ Extracted frames already exist. Skipping extraction.")
@@ -26,6 +39,8 @@ def extract_frames():
                 ret, frame = cap.read()
                 if not ret:
                     break
+
+                # frame = rotate_frame_if_needed(frame, video_file)
 
                 frame_path = os.path.join(output_category_path, f"{video_file}_frame_{count}.jpg")
                 cv2.imwrite(frame_path, frame)

@@ -13,8 +13,8 @@ DATASET_PATH = "processed_dataset"
 IMG_SIZE = 64  
 
 # Define real and fake categories
-REAL_CATEGORIES = ["real","live_selfie","live_video"]
-FAKE_CATEGORIES = ["mask", "monitor", "outline", "print", "print_cut", "silicone","cut-out printouts","printouts","replay"]
+REAL_CATEGORIES = ["real"]
+FAKE_CATEGORIES = [ "monitor", "print", "print_cut"]
 
 def load_images(category, label):
     images, labels = [], []
