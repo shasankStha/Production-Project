@@ -179,4 +179,4 @@ FaceDetection/src/liveness_training/DataSet/
 # Ignore large model files
 FaceDetection/src/liveness_training/models/last.pt
 FaceDetection/src/liveness_training/models/l_version_1_300.pt
-FaceDetection/src/liveness_training/models/l_version_1_10.pt
+FaceDetection/src/liveness_training/models/l_version_1_10.pt.DS_Store
