@@ -4,7 +4,7 @@ import cvzone
 from time import time
 
 #################################
-classId = 0 # 0 is for fake and 1 is for real
+classId = 1 # 0 is for fake and 1 is for real
 outputFolderPath = "DataSet/DataCollectReal"
 confidence = 0.8
 save = True
