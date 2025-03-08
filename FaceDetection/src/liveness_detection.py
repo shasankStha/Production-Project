@@ -26,6 +26,8 @@ motion_score_history = []  # Stores motion scores for a rolling average
 motion_window = 10  # Number of frames to average motion
 motion_detected_flag = False
 
+# Face distance threshold (If face width in pixels is greater than this, the function will return)
+FACE_TOO_CLOSE_THRESHOLD = 300  
 
 def detect_motion(frame):
     """Detects motion by comparing the current frame with the previous frame."""
@@ -37,7 +39,6 @@ def detect_motion(frame):
     if not results.multi_face_landmarks:
         return False
 
-    # Extract landmarks for the first detected face
     landmarks = results.multi_face_landmarks[0]
     face_points = [(int(l.x * frame.shape[1]), int(l.y * frame.shape[0])) for l in landmarks.landmark]
 
@@ -52,7 +53,6 @@ def detect_motion(frame):
     )
     prev_landmarks = face_points 
 
-    # Store motion history
     motion_score_history.append(total_motion)
     if len(motion_score_history) > motion_window:
         motion_score_history.pop(0)
@@ -63,8 +63,28 @@ def detect_motion(frame):
     motion_detected_flag = avg_motion > motion_threshold
     return motion_detected_flag
 
+def is_face_too_close(frame, landmarks):
+    """Determines if the face is too close to the camera based on landmark distances."""
+    if not landmarks:
+        return False
+
+    # Extract key facial features for measuring proximity
+    left_eye = (int(landmarks.landmark[33].x * frame.shape[1]), int(landmarks.landmark[33].y * frame.shape[0]))
+    right_eye = (int(landmarks.landmark[263].x * frame.shape[1]), int(landmarks.landmark[263].y * frame.shape[0]))
+
+    # Estimate face width using eye distance
+    face_width = abs(right_eye[0] - left_eye[0])
+
+    return face_width > FACE_TOO_CLOSE_THRESHOLD
+
 def identify_real_or_fake(frame):
     motion_detected = detect_motion(frame)
+    img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results_mp = face_mesh.process(img_rgb)
+
+    if results_mp.multi_face_landmarks and is_face_too_close(frame, results_mp.multi_face_landmarks[0]):
+        return
+
     results = model(frame, stream=True, verbose=False)
 
     for r in results:
@@ -72,14 +92,14 @@ def identify_real_or_fake(frame):
         for box in boxes:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+            w, h = x2 - x1, y2 - y1
             conf = math.ceil((box.conf[0] * 100)) / 100
             cls = int(box.cls[0])
             
             if conf > confidence:
                 identification = classNames[cls]
-                if identification == 'real':
-                    if not motion_detected:
-                        identification = 'fake'
+                if identification == 'real' and not motion_detected:
+                    identification = 'fake'
 
                 # color = (0, 255, 0) if identification == 'real' else (0, 0, 255)
                 # cvzone.cornerRect(frame, (x1, y1, w, h), colorC=color, colorR=color)
