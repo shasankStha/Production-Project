@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from ultralytics import YOLO
+import time
 
 # Initialize Mediapipe Face Mesh
 mp_face_mesh = mp.solutions.face_mesh
@@ -17,33 +18,50 @@ model = YOLO(MODEL_PATH)
 classNames = ["fake", "real"]
 
 confidence=0.8
+
 # Motion detection variables
-prev_frame = None
-motion_threshold = 1500
+prev_landmarks = None
+motion_threshold = 3.0  # Threshold for face motion (sum of distances)
+motion_score_history = []  # Stores motion scores for a rolling average
+motion_window = 10  # Number of frames to average motion
+motion_detected_flag = False
 
 
 def detect_motion(frame):
     """Detects motion by comparing the current frame with the previous frame."""
-    global prev_frame
+    global prev_landmarks, motion_score_history, motion_detected_flag
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (21, 21), 0)
+    img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(img_rgb)
 
-    # No motion detected in the first frame
-    if prev_frame is None:
-        prev_frame = gray
-        return False  
+    if not results.multi_face_landmarks:
+        return False
 
-    # Compute the absolute difference between the current frame and previous frame
-    frame_diff = cv2.absdiff(prev_frame, gray)
-    prev_frame = gray
+    # Extract landmarks for the first detected face
+    landmarks = results.multi_face_landmarks[0]
+    face_points = [(int(l.x * frame.shape[1]), int(l.y * frame.shape[0])) for l in landmarks.landmark]
 
-    _, thresh = cv2.threshold(frame_diff, 30, 255, cv2.THRESH_BINARY)
-    motion_score = np.sum(thresh)
+    if prev_landmarks is None:
+        prev_landmarks = face_points
+        return False  # No motion detected on first frame
 
-    motion_detected = motion_score > motion_threshold
+    # Calculate total movement by summing Euclidean distances between corresponding points
+    total_motion = sum(
+        math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        for (x1, y1), (x2, y2) in zip(prev_landmarks, face_points)
+    )
+    prev_landmarks = face_points 
 
-    return motion_detected
+    # Store motion history
+    motion_score_history.append(total_motion)
+    if len(motion_score_history) > motion_window:
+        motion_score_history.pop(0)
+
+    # Use rolling average for stability
+    avg_motion = np.mean(motion_score_history)
+
+    motion_detected_flag = avg_motion > motion_threshold
+    return motion_detected_flag
 
 def identify_real_or_fake(frame):
     motion_detected = detect_motion(frame)
