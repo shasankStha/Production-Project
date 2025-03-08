@@ -3,3 +3,4 @@ ultralytics
 mediapipe
 numpy
 cv2
+face_recognition

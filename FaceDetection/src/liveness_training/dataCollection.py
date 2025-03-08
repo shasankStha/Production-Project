@@ -39,7 +39,7 @@ while True:
 
             # Check score
             if score > confidence:
-                # Adding Offset to yhe face Detected
+                # Adding Offset to the face Detected
                 offsetW = (offsetPercentageW/100)*w
                 x = int(x - offsetW)
                 w = int(w + offsetW * 2)
@@ -56,7 +56,6 @@ while True:
 
                 # Find Blurriness
                 imgFace = img[y:y + h, x:x + w]
-                # cv2.imshow("Face",imgFace)
                 blurValue = int(cv2.Laplacian(imgFace,cv2.CV_64F).var())
 
                 if blurValue > blurThreshold:

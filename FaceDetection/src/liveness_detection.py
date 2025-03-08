@@ -72,7 +72,6 @@ def identify_real_or_fake(frame):
         for box in boxes:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-            w, h = x2 - x1, y2 - y1
             conf = math.ceil((box.conf[0] * 100)) / 100
             cls = int(box.cls[0])
             
@@ -82,11 +81,11 @@ def identify_real_or_fake(frame):
                     if not motion_detected:
                         identification = 'fake'
 
-                color = (0, 255, 0) if identification == 'real' else (0, 0, 255)
-                cvzone.cornerRect(frame, (x1, y1, w, h), colorC=color, colorR=color)
-                cvzone.putTextRect(frame, f'{identification.upper()} {int(conf*100)}%',
-                                   (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color,
-                                   colorB=color)
+                # color = (0, 255, 0) if identification == 'real' else (0, 0, 255)
+                # cvzone.cornerRect(frame, (x1, y1, w, h), colorC=color, colorR=color)
+                # cvzone.putTextRect(frame, f'{identification.upper()} {int(conf*100)}%',
+                #                    (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color,
+                #                    colorB=color)
                 return identification  # Return "real" or "fake"
     
     return None  # Return None if no valid prediction is made
