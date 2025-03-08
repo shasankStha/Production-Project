@@ -1,3 +1,5 @@
 cvzone
 ultralytics
 mediapipe
+numpy
+cv2
