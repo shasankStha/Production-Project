@@ -13,7 +13,7 @@ blurThreshold = 70 #More larger more focus
 debug = False
 offsetPercentageW = 10
 offsetPercentageH = 20
-camWidth, camHeight = 640, 480
+camWidth, camHeight = 1280, 720
 floatingPoint = 6
 ###############################
 
