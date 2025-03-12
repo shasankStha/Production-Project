@@ -13,7 +13,7 @@ face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_con
 
 # Load the model once
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "../models/n_version4_10best.pt")
+MODEL_PATH = os.path.join(BASE_DIR, "../../models/n_version4_10best.pt")
 model = YOLO(MODEL_PATH)
 classNames = ["fake", "real"]
 
@@ -101,11 +101,12 @@ def identify_real_or_fake(frame):
                 if identification == 'real' and not motion_detected:
                     identification = 'fake'
 
-                color = (0, 255, 0) if identification == 'real' else (0, 0, 255)
-                cvzone.cornerRect(frame, (x1, y1, w, h), colorC=color, colorR=color)
-                cvzone.putTextRect(frame, f'{identification.upper()} {int(conf*100)}%',
-                                   (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color,
-                                   colorB=color)
-                return identification, conf  # Return "real" or "fake"
+                if identification == 'fake':
+                    color = (0, 255, 0) if identification == 'real' else (0, 0, 255)
+                    cvzone.cornerRect(frame, (x1, y1, w, h), colorC=color, colorR=color)
+                    cvzone.putTextRect(frame, f'{identification.upper()} {int(conf*100)}%',
+                                    (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color,
+                                    colorB=color)
+                return identification, conf
     
-    return None  # Return None if no valid prediction is made
+    return None, None

@@ -1,0 +1,14 @@
+.home-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.register-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    margin-top: 20px;
+}

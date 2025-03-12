@@ -180,3 +180,5 @@ FaceDetection/src/liveness_training/DataSet/
 FaceDetection/src/liveness_training/models/last.pt
 FaceDetection/src/liveness_training/models/l_version_1_300.pt
 FaceDetection/src/liveness_training/models/l_version_1_10.pt.DS_Store
+FaceDetection/images/
+FaceDetection/users.csv
