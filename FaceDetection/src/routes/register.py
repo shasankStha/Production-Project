@@ -22,7 +22,7 @@ def register_user():
     if not image_dir:
         return jsonify({"error": "Face capture failed. Try again."}), 500
 
-    image_path = os.path.join(image_dir, "0.jpg")  # Store the first image path
+    image_path = os.path.join(image_dir, "0.jpg")  
     
     # Save user details in CSV
     with open(CSV_FILE, mode="a", newline="") as file:

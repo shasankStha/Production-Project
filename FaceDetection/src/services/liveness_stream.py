@@ -1,27 +1,41 @@
 import cv2
-import time
-from flask import Response
+import cvzone
+from cvzone.FaceDetectionModule import FaceDetector
 from src.utils.liveness_detection import identify_real_or_fake
-from config.config import CAM_WIDTH, CAM_HEIGHT
+
+detector = FaceDetector()  
 
 def generate_frames():
     cap = cv2.VideoCapture(0)
-    cap.set(3, CAM_WIDTH)
-    cap.set(4, CAM_HEIGHT)
 
     while True:
         success, frame = cap.read()
         if not success:
             break
 
-        spoofing_test = identify_real_or_fake(frame)  # Perform liveness detection
+        frame, bboxs = detector.findFaces(frame, draw=False)
 
-        # Encode frame for streaming
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
+        if len(bboxs) > 0:
+            bbox = bboxs[0]
+            x, y, w, h = bbox["bbox"]
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            spoofing_test, conf = identify_real_or_fake(frame)
+
+            color = (0, 255, 0) if spoofing_test == "real" else (0, 0, 255)
+
+            # if spoofing_test == 'fake':
+            #     cvzone.cornerRect(frame, (x, y, w, h), colorC=color, colorR=color)
+
+            if spoofing_test == 'fake' or spoofing_test == 'real':
+                cvzone.cornerRect(frame, (x, y, w, h), colorC=color, colorR=color)
+
+                cv2.putText(frame, f"{spoofing_test.upper()} {int(conf * 100)}%", (50, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
+
+        _, buffer = cv2.imencode(".jpg", frame)
+        frame_bytes = buffer.tobytes()
+
+        yield (b"--frame\r\n"
+               b"Content-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
 
     cap.release()
-

@@ -12,3 +12,6 @@ flask_jwt_extended
 psycopg2
 werkzeug
 flask-cors
+flask_socketio
+
+redis

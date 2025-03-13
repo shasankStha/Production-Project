@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import VideoFeed from "../components/VideoFeed";
 import "../styles/Register.css";
 
-const Register = () => {
+function Register() {
     const [userId, setUserId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -36,23 +36,15 @@ const Register = () => {
 
     return (
         <div className="register-container">
-            <h1>Register User</h1>
-
-            <div className="input-group">
-                <input type="text" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} />
-                <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-
-            <button onClick={registerUser} disabled={loading}>
-                {loading ? "Registering..." : "Register"}
-            </button>
-
-            {message && <h3 className="message">{message}</h3>}
-
+            <h1>Register</h1>
             <VideoFeed />
+            <input type="text" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} />
+            <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button onClick={registerUser} disabled={loading}>{loading ? "Registering..." : "Register"}</button>
+            {message && <h3 className="message">{message}</h3>}
         </div>
     );
-};
+}
 
 export default Register;
