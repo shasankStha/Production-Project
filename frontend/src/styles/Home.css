@@ -10,5 +10,15 @@
     background-color: #007bff;
     color: white;
     border: none;
-    margin-top: 20px;
+    margin: 20px 20px;
+}
+
+.attendance-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #0aa507;
+    color: white;
+    border: none;
+    margin: 20px 20px;
 }

@@ -5,6 +5,7 @@ mediapipe
 numpy
 opencv-python
 face_recognition
+joblib
 
 flask
 flask_sqlalchemy
@@ -13,5 +14,3 @@ psycopg2
 werkzeug
 flask-cors
 flask_socketio
-
-redis

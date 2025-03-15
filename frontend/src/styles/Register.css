@@ -18,3 +18,15 @@ button {
     color: white;
     border: none;
 }
+
+.instruction {
+    font-size: 1.2rem;
+    color: green;
+    margin-top: 10px;
+}
+
+.timer {
+    font-size: 1rem;
+    color: orange;
+    margin-top: 5px;
+}

@@ -1,18 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
+import "../components/VideoFeed";
+// import VideoFeed from "../components/VideoFeed";
 
-function Home() {
+const Home=()=>{
     const navigate = useNavigate();
 
     return (
         <div className="home-container">
             <h1>Facial Recognition Attendance System</h1>
-            <div className="video-container">
-                <img src="http://127.0.0.1:5000/video_feed" alt="Live Video Feed" />
-            </div>
+            {/* <VideoFeed attendance={true}/> */}
             <button onClick={() => navigate("/register")} className="register-btn">
                 Register
+            </button>
+            <button onClick={() => navigate("/attendance")} className="attendance-btn">
+                Attendance
             </button>
         </div>
     );

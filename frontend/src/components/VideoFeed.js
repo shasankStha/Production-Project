@@ -1,10 +1,10 @@
 import React from "react";
 import "../styles/VideoFeed.css";
 
-function VideoFeed() {
+const VideoFeed = ({attendance}) => {
     return (
         <div className="video-container">
-            <img src="http://127.0.0.1:5000/video_feed" alt="Live Video Feed" />
+            <img src={`http://127.0.0.1:5000/video_feed?attendance=${attendance}`} alt="Live Video Feed" />
         </div>
     );
 }
