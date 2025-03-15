@@ -1,0 +1,32 @@
+.register-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.input-group input {
+    display: block;
+    width: 300px;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.instruction {
+    font-size: 1.2rem;
+    color: green;
+    margin-top: 10px;
+}
+
+.timer {
+    font-size: 1rem;
+    color: orange;
+    margin-top: 5px;
+}

@@ -1,44 +1,82 @@
-import math
-import time
+# import math
+# import time
 
-import cv2
-import cvzone
-from ultralytics import YOLO
-from src.liveness_detection import identify_real_or_fake
+# import cv2
+# import cvzone
+# from ultralytics import YOLO
+# from src.liveness_detection import identify_real_or_fake
 
-#################################
-confidence = 0.8
-camWidth, camHeight = 640, 480
-#################################
+# #################################
+# confidence = 0.8
+# camWidth, camHeight = 1280, 720
+# #################################
 
-def main():
+# def main():
     
-    cap = cv2.VideoCapture(0)
-    cap.set(3, camWidth)
-    cap.set(4, camHeight)
+#     cap = cv2.VideoCapture(0)
+#     cap.set(3, camWidth)
+#     cap.set(4, camHeight)
 
-    prev_frame_time = 0
+#     prev_frame_time = 0
 
-    while True:
-        new_frame_time = time.time()
+#     while True:
+#         new_frame_time = time.time()
         
-        ret, frame = cap.read()
-        if not ret:
-            break
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
 
-        result = identify_real_or_fake(frame)
+#         result = identify_real_or_fake(frame)
 
-        fps = 1 / (new_frame_time - prev_frame_time)
-        prev_frame_time = new_frame_time
-        # print(f"FPS: {fps:.2f}")
+#         fps = 1 / (new_frame_time - prev_frame_time)
+#         prev_frame_time = new_frame_time
+#         # print(f"FPS: {fps:.2f}")
 
-        cv2.imshow("Video Feed", frame)
+#         cv2.imshow("Video Feed", frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
 
-    cap.release()
-    cv2.destroyAllWindows()
+#     cap.release()
+#     cv2.destroyAllWindows()
+
+# if __name__ == "__main__":
+#     main()
+
+from flask import Flask
+from flask_cors import CORS
+from src.utils.extensions import socketio
+from src.routes.register import register_bp
+from src.routes.video import video_bp
+
+app = Flask(__name__)
+CORS(app)
+
+# Register Blueprints
+app.register_blueprint(register_bp)
+app.register_blueprint(video_bp)
+
+# Initialize SocketIO with the app
+socketio.init_app(app, cors_allowed_origins="*")
+
+@app.route("/")
+def index():
+    return "WebSocket Server Running"
+
+@socketio.on("connect")
+def handle_connect():
+    print("Client connected")
+
+@socketio.on("disconnect")
+def handle_disconnect():
+    print("Client disconnected")
 
 if __name__ == "__main__":
-    main()
+    socketio.run(app)
+    
+
+
+
+
+
+

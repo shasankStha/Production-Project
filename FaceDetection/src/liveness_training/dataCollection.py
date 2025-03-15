@@ -8,12 +8,12 @@ classId = 1 # 0 is for fake and 1 is for real
 outputFolderPath = "DataSet/DataCollectReal"
 confidence = 0.8
 save = True
-blurThreshold = 70 #More larger more focus
+blurThreshold = 40 #More larger more focus
 
 debug = False
 offsetPercentageW = 10
 offsetPercentageH = 20
-camWidth, camHeight = 640, 480
+camWidth, camHeight = 1280, 720
 floatingPoint = 6
 ###############################
 
@@ -39,7 +39,7 @@ while True:
 
             # Check score
             if score > confidence:
-                # Adding Offset to yhe face Detected
+                # Adding Offset to the face Detected
                 offsetW = (offsetPercentageW/100)*w
                 x = int(x - offsetW)
                 w = int(w + offsetW * 2)
@@ -56,7 +56,6 @@ while True:
 
                 # Find Blurriness
                 imgFace = img[y:y + h, x:x + w]
-                # cv2.imshow("Face",imgFace)
                 blurValue = int(cv2.Laplacian(imgFace,cv2.CV_64F).var())
 
                 if blurValue > blurThreshold:

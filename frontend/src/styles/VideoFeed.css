@@ -1,0 +1,9 @@
+.video-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.video-container img {
+    width: 50%;
+    border: 2px solid #000;
+}

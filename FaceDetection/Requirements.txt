@@ -1,5 +1,16 @@
+python-dotenv
 cvzone
 ultralytics
 mediapipe
 numpy
-cv2
+opencv-python
+face_recognition
+joblib
+
+flask
+flask_sqlalchemy
+flask_jwt_extended
+psycopg2
+werkzeug
+flask-cors
+flask_socketio
