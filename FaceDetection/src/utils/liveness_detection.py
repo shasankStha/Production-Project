@@ -83,7 +83,7 @@ def identify_real_or_fake(frame):
     results_mp = face_mesh.process(img_rgb)
 
     if results_mp.multi_face_landmarks and is_face_too_close(frame, results_mp.multi_face_landmarks[0]):
-        return
+        return None, None
 
     results = model(frame, stream=True, verbose=False)
 
