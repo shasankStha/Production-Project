@@ -22,7 +22,7 @@ def register_user():
 
         socketio.emit("registration_status", {"message": "Registration started..."})
 
-        image_dir = capture_face(user_id)
+        image_dir = capture_face(user_id+"."+name)
         if not image_dir:
             socketio.emit("registration_status", {"error": "Face capture failed. Try again."})
             return jsonify({"error": "Face capture failed. Try again."}), 500
@@ -40,7 +40,7 @@ def register_user():
             socketio.emit("registration_status", {"error": f"Failed to save user details: {str(e)}"})
             return jsonify({"error": f"Failed to save user details: {str(e)}"}), 500
 
-        if not train_model(user_identifier, image_dir):
+        if not train_model(name, image_dir):
             return jsonify({"error": "Model training failed."}), 500
         
         socketio.emit("registration_status", {"message": "User registered successfully!"})

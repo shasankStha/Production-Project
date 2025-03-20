@@ -4,7 +4,7 @@ ultralytics
 mediapipe
 numpy
 opencv-python
-face_recognition
+scikit-learn
 joblib
 
 flask

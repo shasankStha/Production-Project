@@ -1,6 +1,5 @@
 import cv2
 import cvzone
-import face_recognition
 import os
 import joblib
 from cvzone.FaceDetectionModule import FaceDetector
@@ -10,6 +9,18 @@ from config.config import (
 )
 detector = FaceDetector()
 
+def identify_face(facearray):
+    model = joblib.load(MODEL_PATH)
+    return model.predict(facearray)[0]
+
+def extract_faces(img):
+    try:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        face_points = FaceDetector.detectMultiScale(gray, 1.2, 5, minSize=(20, 20))
+        return face_points
+    except:
+        return []
+
 def generate_frames(attendance:False):
     try:
         cap = cv2.VideoCapture(0)
@@ -17,17 +28,6 @@ def generate_frames(attendance:False):
         cap.set(4, CAM_HEIGHT)
         if not cap.isOpened():
             raise Exception("Camera access failed.")
-        
-        known_encodings = []
-        known_names = []
-        if os.path.exists(MODEL_PATH):
-            try:
-                with open(MODEL_PATH, "rb") as f:
-                    data = joblib.load(f)
-                    known_encodings = data["encodings"]
-                    known_names = data["names"]
-            except Exception as e:
-                print(f"[ERROR] Failed to load model: {str(e)}")
 
         while True:
             success, frame = cap.read()
@@ -50,26 +50,20 @@ def generate_frames(attendance:False):
 
                 # Spoofing detection
                 spoofing_test, conf = identify_real_or_fake(frame)
+
                 if spoofing_test == 'fake' or spoofing_test == 'real':
                     color = (0, 255, 0) if spoofing_test == "real" else (0, 0, 255)
                     cv2.putText(frame, f"{spoofing_test.upper()} {int(conf * 100)}%", (50, 50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
                     cvzone.cornerRect(frame, (x, y, w, h), colorC=color, colorR=color)
 
-                    if spoofing_test == 'real' and attendance and len(known_encodings)>0:
-                        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                        face_locations = face_recognition.face_locations(rgb_frame)
-                        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-                        for face_encoding in face_encodings:
-                            matches = face_recognition.compare_faces(known_encodings, face_encoding)
-                            if True in matches:
-                                match_index = matches.index(True)
-                                name = known_names[match_index].split(" ")[1]
-                                text_size = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0] 
-                                text_x = x + (w - text_size[0]) // 2
-                                text_y = y + h - 30
-                                cv2.putText(frame, name, (text_x, text_y),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+                    # Attendance
+                    if spoofing_test == 'real' and attendance:
+                        face = cv2.resize(frame[y:y + h, x:x + w], (50, 50))
+                        face_array = face.reshape(1, -1)
+                        identified_person = identify_face(face_array)
+                        print(identified_person)
+
 
             _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 80])
             frame_bytes = buffer.tobytes()

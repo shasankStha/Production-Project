@@ -12,9 +12,9 @@ from src.utils.liveness_detection import identify_real_or_fake
 
 detector = FaceDetector()
 
-def capture_face(user_id):
+def capture_face(user_identification):
     """Captures face images while detecting liveness."""
-    image_dir = os.path.join(IMAGE_DIR, user_id)
+    image_dir = os.path.join(IMAGE_DIR, user_identification)
     try:
         os.makedirs(image_dir, exist_ok=True)
     except Exception as e:

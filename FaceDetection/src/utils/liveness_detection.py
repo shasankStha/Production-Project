@@ -21,12 +21,11 @@ confidence=0.8
 
 # Motion detection variables
 prev_landmarks = None
-motion_threshold = 3.0  # Threshold for face motion (sum of distances)
-motion_score_history = []  # Stores motion scores for a rolling average
-motion_window = 10  # Number of frames to average motion
+motion_threshold = 3.0 
+motion_score_history = []  
+motion_window = 10  
 motion_detected_flag = False
 
-# Face distance threshold (If face width in pixels is greater than this, the function will return)
 FACE_TOO_CLOSE_THRESHOLD = 300  
 
 def detect_motion(frame):
@@ -44,7 +43,7 @@ def detect_motion(frame):
 
     if prev_landmarks is None:
         prev_landmarks = face_points
-        return False  # No motion detected on first frame
+        return False
 
     # Calculate total movement by summing Euclidean distances between corresponding points
     total_motion = sum(

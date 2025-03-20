@@ -29,8 +29,8 @@ while True:
 
     img, bboxs = detector.findFaces(img, draw = False)
 
-    listBlur = [] #True False values indicating if the faces are blur or not
-    listInfo = [] #The normalized value and the class name for the label txt file
+    listBlur = [] 
+    listInfo = [] 
 
     if bboxs:
         for bbox in bboxs:
@@ -47,14 +47,10 @@ while True:
                 offsetH = (offsetPercentageH/100)*h
                 y = int(y - offsetH * 3)
                 h = int(h + offsetH * 3.5)
-
-                # To avoid values below 0
                 if x < 0:x=0
                 if y < 0:y=0
                 if w < 0:w=0
                 if h < 0:h=0
-
-                # Find Blurriness
                 imgFace = img[y:y + h, x:x + w]
                 blurValue = int(cv2.Laplacian(imgFace,cv2.CV_64F).var())
 

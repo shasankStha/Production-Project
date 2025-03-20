@@ -1,35 +1,53 @@
 import os
-import face_recognition
+import numpy as np
+import cv2
 import joblib
-from config.config import IMAGE_DIR
+from sklearn.neighbors import KNeighborsClassifier
+from config.config import IMAGE_DIR, MODEL_PATH
 
-MODEL_PATH = "models/face_recognition_model.pkl"
-
-def train_model(user_identifier, image_dir):
+def train_model(user_name, image_dir):
+    print(user_name, image_dir)
+    faces = []
+    labels = []
     try:
-        known_encodings = []
-        known_names = []
-
         if os.path.exists(MODEL_PATH):
-            with open(MODEL_PATH, "rb") as f:
-                data = joblib.load(f)
-                known_encodings = data["encodings"]
-                known_names = data["names"]
+            knn = joblib.load(MODEL_PATH)
+            faces = knn._fit_X.tolist()
+            labels = knn.classes_.tolist()
+        
+        userlist = os.listdir(image_dir)
+        for user in userlist:
+            user_dir = os.path.join(image_dir, user)
+            
+            if not os.path.isdir(user_dir):
+                continue
 
-        for img_name in os.listdir(image_dir):
-            img_path = os.path.join(image_dir, img_name)
-            img = face_recognition.load_image_file(img_path)
-            encodings = face_recognition.face_encodings(img)
+            for imgname in os.listdir(user_dir):
+                img_path = os.path.join(user_dir, imgname)
+                img = cv2.imread(img_path)
+            
+                if img is None:
+                    print(f"Unable to read image: {img_path}")
+                    continue
+            
+                resized_face = cv2.resize(img, (50, 50))
+                faces.append(resized_face.ravel())
+                labels.append(user_name)
 
-            if encodings:
-                known_encodings.append(encodings[0])
-                known_names.append(user_identifier)
+        if len(faces) == 0:
+            print("[ERROR] No valid face images found for training.")
+            return False
+        
+        faces = np.array(faces)
+        labels = np.array(labels)
 
-        data = {"encodings": known_encodings, "names": known_names}
-        with open(MODEL_PATH, "wb") as f:
-            joblib.dump(data, f)
+        print("[INFO] Training/updating the KNN model...")
+        knn = KNeighborsClassifier(n_neighbors=5)
+        knn.fit(faces, labels)
 
-        print("[INFO] Model trained successfully.")
+        # Save the updated model
+        joblib.dump(knn, MODEL_PATH)
+        print("[INFO] Model trained and saved successfully.")
         return True
     except Exception as e:
         print(f"[ERROR] An error occurred during model training: {str(e)}")
