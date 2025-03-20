@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import joblib
 from sklearn.neighbors import KNeighborsClassifier
-from config.config import IMAGE_DIR, MODEL_PATH
+from config.config import MODEL_PATH
 
 def train_model(user_name, image_dir):
     print(user_name, image_dir)
