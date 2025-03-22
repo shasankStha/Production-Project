@@ -42,7 +42,7 @@ def identify_face(face_img):
         
         best_match = None
         highest_similarity = 0.0
-        threshold = 0.8 
+        threshold = 0.6
         
         for user, user_embedding in embeddings.items():
             similarity = cosine_similarity(embedding, user_embedding)
@@ -56,12 +56,17 @@ def identify_face(face_img):
         return None
 
 def generate_frames(attendance:False):
+    global embeddings
     try:
         cap = cv2.VideoCapture(0)
         cap.set(3, CAM_WIDTH)
         cap.set(4, CAM_HEIGHT)
         if not cap.isOpened():
             raise Exception("Camera access failed.")
+        
+        if attendance:
+            data = joblib.load(MODEL_PATH)
+            embeddings = data.get('embeddings', {})
         
         # Variables for frame skipping and storing results
         frame_counter = 0
@@ -116,7 +121,7 @@ def generate_frames(attendance:False):
 
             frame_counter += 1
 
-            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 50])
+            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 40])
             frame_bytes = buffer.tobytes()
             yield (b"--frame\r\n"
                    b"Content-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")

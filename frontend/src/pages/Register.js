@@ -23,8 +23,6 @@ const Register= () => {
                 setStatusMessage(data.message);
             }
         });
-
-        // Cleanup listener on unmount
         return () => {
             socket.off("registration_status");
         };

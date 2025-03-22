@@ -14,17 +14,20 @@ resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
 def get_embedding(face_image):
     """Generate 512-dimensional embedding from face image"""
-    face = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
-    face = cv2.resize(face, (160, 160)) 
-    face_tensor = torch.tensor(face).permute(2, 0, 1).float().to(device)
-    face_tensor = (face_tensor - 127.5) / 128.0
-    with torch.no_grad():
-        embedding = resnet(face_tensor.unsqueeze(0)).cpu().numpy().flatten()
-    return embedding
+    try:
+        face = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
+        face = cv2.resize(face, (160, 160)) 
+        face_tensor = torch.tensor(face).permute(2, 0, 1).float().to(device)
+        face_tensor = (face_tensor - 127.5) / 128.0
+        with torch.no_grad():
+            embedding = resnet(face_tensor.unsqueeze(0)).cpu().numpy().flatten()
+        return normalize(embedding.reshape(1, -1)).flatten()
+    except Exception as e:
+        print(f"[ERROR] Embedding failed: {str(e)}")
+        return None
 
 def train_model(user_name, image_dir):
     try:
-        # Load existing data
         if os.path.exists(MODEL_PATH):
             data = joblib.load(MODEL_PATH)
             embeddings = data.get('embeddings', {})
@@ -49,6 +52,8 @@ def train_model(user_name, image_dir):
             face = img[y1:y2, x1:x2]
             
             embedding = get_embedding(face)
+            if embedding is None:
+                continue
             user_embeddings.append(embedding)
 
         if not user_embeddings:
