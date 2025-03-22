@@ -6,6 +6,9 @@ numpy
 opencv-python
 scikit-learn
 joblib
+facenet-pytorch 
+torch           
+torchvision
 
 flask
 flask_sqlalchemy

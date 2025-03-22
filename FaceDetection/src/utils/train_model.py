@@ -2,52 +2,67 @@ import os
 import numpy as np
 import cv2
 import joblib
-from sklearn.neighbors import KNeighborsClassifier
+import torch
+from facenet_pytorch import InceptionResnetV1, MTCNN
+from sklearn.preprocessing import normalize
 from config.config import MODEL_PATH
 
+# Initialize FaceNet model and face detector
+device = 'cpu'
+mtcnn = MTCNN(keep_all=True, device=device)
+resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
+
+def get_embedding(face_image):
+    """Generate 512-dimensional embedding from face image"""
+    face = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
+    face = cv2.resize(face, (160, 160)) 
+    face_tensor = torch.tensor(face).permute(2, 0, 1).float().to(device)
+    face_tensor = (face_tensor - 127.5) / 128.0
+    with torch.no_grad():
+        embedding = resnet(face_tensor.unsqueeze(0)).cpu().numpy().flatten()
+    return embedding
+
 def train_model(user_name, image_dir):
-    print(user_name, image_dir)
-    faces = []
-    labels = []
     try:
+        # Load existing data
         if os.path.exists(MODEL_PATH):
-            knn = joblib.load(MODEL_PATH)
-            faces = knn._fit_X.tolist()
-            labels = knn.classes_.tolist()
-        
-        userlist = os.listdir(image_dir)
-        for user in userlist:
-            user_dir = os.path.join(image_dir, user)
+            data = joblib.load(MODEL_PATH)
+            embeddings = data.get('embeddings', {})
+        else:
+            embeddings = {}
+
+        user_embeddings = []
+        for image_file in os.listdir(image_dir):
+            img_path = os.path.join(image_dir, image_file)
+            img = cv2.imread(img_path)
             
-            if not os.path.isdir(user_dir):
+            if img is None:
+                print(f"Unable to read image: {img_path}")
                 continue
 
-            for imgname in os.listdir(user_dir):
-                img_path = os.path.join(user_dir, imgname)
-                img = cv2.imread(img_path)
-            
-                if img is None:
-                    print(f"Unable to read image: {img_path}")
-                    continue
-            
-                resized_face = cv2.resize(img, (50, 50))
-                faces.append(resized_face.ravel())
-                labels.append(user_name)
+            boxes, _ = mtcnn.detect(img)
+            if boxes is None:
+                print(f"[WARNING] No face detected in {img_path}")
+                continue
 
-        if len(faces) == 0:
-            print("[ERROR] No valid face images found for training.")
+            x1, y1, x2, y2 = boxes[0].astype(int)
+            face = img[y1:y2, x1:x2]
+            
+            embedding = get_embedding(face)
+            user_embeddings.append(embedding)
+
+        if not user_embeddings:
+            print("[ERROR] No valid faces found for training")
             return False
-        
-        faces = np.array(faces)
-        labels = np.array(labels)
 
-        print("[INFO] Training/updating the KNN model...")
-        knn = KNeighborsClassifier(n_neighbors=5)
-        knn.fit(faces, labels)
+        avg_embedding = np.mean(user_embeddings, axis=0)
+        avg_embedding = normalize(avg_embedding.reshape(1, -1)).flatten()
 
-        # Save the updated model
-        joblib.dump(knn, MODEL_PATH)
-        print("[INFO] Model trained and saved successfully.")
+        embeddings[user_name] = avg_embedding
+        joblib.dump({'embeddings': embeddings}, MODEL_PATH)
+        print(f"[INFO] User '{user_name}' registered successfully")
         return True
+
     except Exception as e:
-        print(f"[ERROR] An error occurred during model training: {str(e)}")
+        print(f"[ERROR] Training failed: {str(e)}")
+        return False
