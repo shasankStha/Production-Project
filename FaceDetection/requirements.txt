@@ -17,3 +17,5 @@ psycopg2
 werkzeug
 flask-cors
 flask_socketio
+flask-migrate
+flask-bcrypt

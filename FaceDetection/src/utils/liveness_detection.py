@@ -6,6 +6,7 @@ import numpy as np
 import mediapipe as mp
 from ultralytics import YOLO
 import time
+from config.config import LIVENESS_DETECTION_MODEL,CLASSNAMES, LIVENESS_CONFIDENCE
 
 # Initialize Mediapipe Face Mesh
 mp_face_mesh = mp.solutions.face_mesh
@@ -13,11 +14,10 @@ face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_con
 
 # Load the model once
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "../../models/n_version4_10best.pt")
+MODEL_PATH = LIVENESS_DETECTION_MODEL ##os.path.join(BASE_DIR, "../../models/n_version4_10best.pt")
 model = YOLO(MODEL_PATH)
-classNames = ["fake", "real"]
-
-confidence=0.8
+classNames = CLASSNAMES
+confidence= LIVENESS_CONFIDENCE
 
 # Motion detection variables
 prev_landmarks = None
