@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Attendance from "../pages/Attendance";
 import Login from "../components/Login";
@@ -19,12 +18,30 @@ function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Protected Routes */}
+        <Route
+          path="/register"
+          element={
+            user?.role === "admin" ? (
+              <Register />
+            ) : (
+              <Navigate to="/login"></Navigate>
+            )
+          }
+        />
+        <Route
+          path="/attendance"
+          element={
+            user?.role === "admin" ? (
+              <Attendance />
+            ) : (
+              <Navigate to="/login"></Navigate>
+            )
+          }
+        />
+
         <Route
           path="/admin-dashboard"
           element={
