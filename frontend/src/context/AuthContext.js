@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getToken();
@@ -12,6 +13,7 @@ export const AuthProvider = ({ children }) => {
       const decoded = decodeToken(token);
       setUser(decoded?.sub || null);
     }
+    setLoading(false);
   }, []);
 
   const login = (token) => {
@@ -23,7 +25,12 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     removeToken();
     setUser(null);
+    window.location.reload();
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

@@ -14,7 +14,17 @@ export const decodeToken = (token) => {
   try {
     const base64Payload = token.split(".")[1];
     if (!base64Payload) return null;
-    return JSON.parse(atob(base64Payload));
+    const decoded = JSON.parse(atob(base64Payload));
+    console.log(decoded)
+
+    // Check if token is expired
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decoded.exp < currentTime) {
+      console.warn("Token expired");
+      removeToken();
+      return null;
+    }
+    return decoded;
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;

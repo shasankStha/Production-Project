@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import VideoFeed from "../components/VideoFeed";
+import "../styles/AdminDashboard.css"
 
 const AdminDashboard = () => {
   const { logout } = useAuth();

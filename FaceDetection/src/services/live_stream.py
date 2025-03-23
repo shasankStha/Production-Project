@@ -57,7 +57,7 @@ def identify_face(face_img):
         return None
 
 def generate_frames(attendance:False):
-    global embeddings
+    global embeddings, cap
     try:
         cap = cv2.VideoCapture(0)
         cap.set(3, CAM_WIDTH)
@@ -122,7 +122,7 @@ def generate_frames(attendance:False):
 
             frame_counter += 1
 
-            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 40])
+            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 50])
             frame_bytes = buffer.tobytes()
             yield (b"--frame\r\n"
                    b"Content-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
@@ -134,3 +134,11 @@ def generate_frames(attendance:False):
     finally:
         cap.release()
         cv2.destroyAllWindows()
+
+def release_camera():
+    global cap
+    if cap is not None and cap.isOpened():
+        cap.release()
+        cv2.destroyAllWindows()
+
+    cap = None
