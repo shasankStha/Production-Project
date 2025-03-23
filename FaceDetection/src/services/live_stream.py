@@ -13,7 +13,8 @@ from config.config import (
     CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH
 )
 
-device = 'cpu'
+# device = 'cpu'
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 mtcnn = MTCNN(keep_all=True, device=device)
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 embeddings = {} 

@@ -8,7 +8,8 @@ from sklearn.preprocessing import normalize
 from config.config import MODEL_PATH
 
 # Initialize FaceNet model and face detector
-device = 'cpu'
+# device = 'cpu'
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 mtcnn = MTCNN(keep_all=True, device=device)
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
