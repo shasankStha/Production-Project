@@ -10,7 +10,7 @@ from cvzone.FaceDetectionModule import FaceDetector
 from src.utils.liveness_detection import identify_real_or_fake
 from src.utils.extensions import thread_pool
 from config.config import (
-    CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH
+    CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH,RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL
 )
 
 # device = 'cpu'
@@ -43,7 +43,7 @@ def identify_face(face_img):
         
         best_match = None
         highest_similarity = 0.0
-        threshold = 0.6
+        threshold = RECOGNITION_THRESHOLD
         
         for user, user_embedding in embeddings.items():
             similarity = cosine_similarity(embedding, user_embedding)
@@ -71,7 +71,7 @@ def generate_frames(attendance:False):
         
         # Variables for frame skipping and storing results
         frame_counter = 0
-        recognition_interval = 4
+        recognition_interval = RECOGNITION_INTERVAL
 
         while True:
             success, frame = cap.read()

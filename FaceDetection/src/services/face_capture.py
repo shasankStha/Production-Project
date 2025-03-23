@@ -4,7 +4,7 @@ import cvzone
 import time
 from cvzone.FaceDetectionModule import FaceDetector
 from config.config import (
-    CAM_WIDTH, CAM_HEIGHT, CONFIDENCE, BLUR_THRESHOLD,
+    CAM_WIDTH, CAM_HEIGHT, LIVENESS_CONFIDENCE, BLUR_THRESHOLD,
     NUMBER_OF_CAPTURE_IMAGE, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H,
     IMAGE_DIR
 )
@@ -47,7 +47,7 @@ def capture_face(user_identification):
                     x, y, w, h = bbox["bbox"]
                     score = float(bbox["score"][0])
 
-                    if score > CONFIDENCE:
+                    if score > LIVENESS_CONFIDENCE:
                         if spoofing_test == "fake":
                             color = (0, 0, 255)
                             cvzone.cornerRect(img, (x, y, w, h), colorC=color, colorR=color)

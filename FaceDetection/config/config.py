@@ -3,7 +3,6 @@ import os
 # Camera settings
 CAM_WIDTH = 1280
 CAM_HEIGHT = 720
-CONFIDENCE = 0.8
 BLUR_THRESHOLD = 40
 NUMBER_OF_CAPTURE_IMAGE = 100
 OFFSET_PERCENTAGE_W = 10
@@ -24,3 +23,12 @@ if not os.path.exists(CSV_FILE):
         import csv
         writer = csv.writer(file)
         writer.writerow(["User ID", "Name", "Email", "Image Path"])
+
+#Liveness Detection
+LIVENESS_DETECTION_MODEL = "models/n_version4_10best.pt"
+CLASSNAMES = ["fake", "real"]
+LIVENESS_CONFIDENCE = 0.8
+
+# Recognition
+RECOGNITION_INTERVAL = 4 #No of frames
+RECOGNITION_THRESHOLD = 0.6
