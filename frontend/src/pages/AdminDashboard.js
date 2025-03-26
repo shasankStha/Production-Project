@@ -1,20 +1,15 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import VideoFeed from "../components/VideoFeed";
 import "../styles/AdminDashboard.css"
+import Sidebar from "../components/Sidebar";
 
 const AdminDashboard = () => {
-  const { logout } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   return (
     <div>
+      <Sidebar/>
       <h2>Admin Dashboard</h2>
       <p>Welcome, Admin!</p>
       <div className="home-container">
@@ -30,7 +25,6 @@ const AdminDashboard = () => {
           Attendance
         </button>
       </div>
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };

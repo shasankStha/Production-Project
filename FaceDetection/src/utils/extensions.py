@@ -13,7 +13,7 @@ socketio = SocketIO()
 max_workers = max(2, os.cpu_count() // 2)
 thread_pool = ThreadPoolExecutor(max_workers=max_workers)
 
-# Create the SQLAlchemy object (it will be initialized later with our app)
+# Create the SQLAlchemy object
 db = SQLAlchemy()
 
 bcrypt = Bcrypt()

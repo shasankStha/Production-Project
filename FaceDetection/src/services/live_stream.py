@@ -1,3 +1,4 @@
+import time
 import cv2
 import cvzone
 import os
@@ -9,9 +10,13 @@ from facenet_pytorch import MTCNN, InceptionResnetV1
 from cvzone.FaceDetectionModule import FaceDetector
 from src.utils.liveness_detection import identify_real_or_fake
 from src.utils.extensions import thread_pool
+from src.services.attendance import insert_attendance, get_or_create_attendance_summary
 from config.config import (
-    CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH,RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL
+    CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH,
+    RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL,IMG_JPEG_QUALITY, RECOGITION_TIMEOUT
 )
+
+last_recognition_time = time.time()
 
 # device = 'cpu'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -27,6 +32,8 @@ if os.path.exists(MODEL_PATH):
 detector = FaceDetector()
 last_identified_person = None
 lock = Lock()
+
+summary = None
 
 def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -56,7 +63,7 @@ def identify_face(face_img):
         print(f"[ERROR] Identification failed: {str(e)}")
         return None
 
-def generate_frames(attendance:False):
+def generate_frames(attendance:False,app,db):
     global embeddings, cap
     try:
         cap = cv2.VideoCapture(0)
@@ -68,7 +75,9 @@ def generate_frames(attendance:False):
         if attendance:
             data = joblib.load(MODEL_PATH)
             embeddings = data.get('embeddings', {})
-        
+            with app.app_context():
+                summary = get_or_create_attendance_summary(db)  
+
         # Variables for frame skipping and storing results
         frame_counter = 0
         recognition_interval = RECOGNITION_INTERVAL
@@ -110,19 +119,27 @@ def generate_frames(attendance:False):
                                 with lock:
                                     last_identified_person = identified
 
+                                if app is not None and last_identified_person:
+                                    with app.app_context():
+                                        name = last_identified_person.split(".")[1]
+                                        if insert_attendance(username=last_identified_person.split(".")[0],
+                                                             summary_id=summary.summary_id,
+                                                             db=db):
+                                            print(f"[INFO] Attendance for {name} recorded successfully.")
+
                             thread_pool.submit(update_recognition)
 
                         with lock:
                             if last_identified_person:
-                                text_size = cv2.getTextSize(last_identified_person, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                                name = last_identified_person.split(".")[1]
+                                text_size = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                                 text_x = x + (w - text_size[0]) // 2
                                 text_y = y + h - 30
-                                cv2.putText(frame, last_identified_person, (text_x, text_y),
+                                cv2.putText(frame, name, (text_x, text_y),
                                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-
             frame_counter += 1
 
-            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, 50])
+            _, buffer = cv2.imencode(".jpg", frame,[cv2.IMWRITE_JPEG_QUALITY, IMG_JPEG_QUALITY])
             frame_bytes = buffer.tobytes()
             yield (b"--frame\r\n"
                    b"Content-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")

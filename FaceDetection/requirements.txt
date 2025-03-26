@@ -1,7 +1,7 @@
 python-dotenv
 cvzone
 ultralytics
-mediapipe
+mediapipe==0.10.21
 numpy
 opencv-python
 scikit-learn
@@ -12,6 +12,7 @@ torchvision
 
 flask
 flask_sqlalchemy
+SQLAlchemyError
 flask_jwt_extended
 psycopg2
 werkzeug

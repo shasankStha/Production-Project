@@ -1,21 +1,21 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import "../styles/UserDashboard.css";
 
 const UserDashboard = () => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   return (
-    <div>
-      <h2>User Dashboard</h2>
-      <p>Welcome, User!</p>
-      <button onClick={handleLogout}>Logout</button>
+    <div className="dashboard-container">
+      <Sidebar />
+      <div className="main-content">
+        <Header />
+        <div className="content">
+          <h2>User Dashboard</h2>
+          <p>Welcome to your dashboard.</p>
+        </div>
+        <Footer />
+      </div>
     </div>
   );
 };
