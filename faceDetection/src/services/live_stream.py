@@ -80,7 +80,6 @@ def generate_frames(attendance:False,app,db):
 
         # Variables for frame skipping and storing results
         frame_counter = 0
-        recognition_interval = RECOGNITION_INTERVAL
 
         while True:
             success, frame = cap.read()
@@ -112,7 +111,7 @@ def generate_frames(attendance:False,app,db):
 
                     # Attendance
                     if spoofing_test == 'real' and attendance:
-                        if frame_counter % recognition_interval == 0:
+                        if frame_counter % RECOGNITION_INTERVAL == 0:
                             def update_recognition():
                                 global last_identified_person
                                 identified = identify_face(face_roi)
@@ -122,10 +121,10 @@ def generate_frames(attendance:False,app,db):
                                 if app is not None and last_identified_person:
                                     with app.app_context():
                                         name = last_identified_person.split(".")[1]
-                                        if insert_attendance(username=last_identified_person.split(".")[0],
+                                        if not insert_attendance(username=last_identified_person.split(".")[0],
                                                              summary_id=summary.summary_id,
                                                              db=db):
-                                            print(f"[INFO] Attendance for {name} recorded successfully.")
+                                            print(f"[Error] Attendance for {name}.")
 
                             thread_pool.submit(update_recognition)
 

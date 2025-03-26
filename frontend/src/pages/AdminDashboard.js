@@ -1,11 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import VideoFeed from "../components/VideoFeed";
 import "../styles/AdminDashboard.css"
 import Sidebar from "../components/Sidebar";
+import AdminAttendanceTable from "../components/AdminAttendanceTable";
+import "../styles/AdminAttendanceTable.css"
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
 
   return (
     <div>
@@ -14,16 +13,7 @@ const AdminDashboard = () => {
       <p>Welcome, Admin!</p>
       <div className="home-container">
         <h1>Facial Recognition Attendance System</h1>
-        <VideoFeed attendance={true} />
-        <button onClick={() => navigate("/register")} className="register-btn">
-          Register
-        </button>
-        <button
-          onClick={() => navigate("/attendance")}
-          className="attendance-btn"
-        >
-          Attendance
-        </button>
+        <AdminAttendanceTable />
       </div>
     </div>
   );
