@@ -27,8 +27,9 @@ def insert_attendance(username, summary_id,db):
         db.session.commit()
 
         summary = db.session.query(AttendanceSummary).filter_by(summary_id=summary_id).first()
+        count = db.session.query(Attendance).filter_by(summary_id=summary_id).count()
         if summary:
-            summary.present_count += 1
+            summary.present_count = count
             db.session.commit()
 
         send_attendance_email(user.email, user.first_name, attendance_time, user_id)
