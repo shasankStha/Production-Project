@@ -21,3 +21,6 @@ flask_socketio
 flask-migrate
 flask-bcrypt
 Flask-Mail
+
+web3
+py-solc-x

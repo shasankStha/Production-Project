@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import time
 import platform
+from src.blockchain.record_on_chain import record_attendance
 
 def store_attendance_for_date(date_str):
     try:
@@ -54,17 +55,17 @@ def store_attendance_for_date(date_str):
 
         print(f"[INFO] Data pinned to IPFS with CID: {cid}")
         
-        filename = f"ipfs.csv"
-        with open(filename, "a+") as f:
-            f.write("\n"+date_str+": "+cid)
-        print(f"[INFO] CID stored in file: {filename}")
-        
         if attendance_summary:
             attendance_summary.ipfs_cid = cid
             db.session.commit()
             print("[INFO] Attendance summary updated with IPFS CID.")
         
-        return cid
+        # Save the IPFS CID and date to the blockchain
+        tx_receipt = record_attendance(cid, date_str)
+        if tx_receipt:
+            print("[INFO] Blockchain record created successfully.")
+
+        return True
     except Exception as e:
         print(f"[ERROR] An error occurred while storing attendance for {date_str}: {str(e)}")
         return None
