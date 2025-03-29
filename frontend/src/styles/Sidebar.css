@@ -4,12 +4,13 @@
   top: 0;
   width: 250px;
   height: 100vh;
-  background: #1e293b;
-  color: white;
+  background: #f9fafb;
+  color: #1e293b;
   padding-top: 20px;
   transition: left 0.3s ease-in-out;
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  border-right: 2px solid #d1d5db;
 }
 
 .sidebar.open {
@@ -24,17 +25,22 @@
 .sidebar ul li {
   padding: 15px;
   transition: background 0.3s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .sidebar ul li:hover {
-  background: #3b82f6;
+  background: #bfdbfe;
+  color: #2563eb;
 }
 
 .sidebar ul li a {
-  color: white;
+  color: #1e293b;
   text-decoration: none;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .icon {
@@ -47,25 +53,29 @@
   right: 10px;
   background: none;
   border: none;
-  color: white;
+  color: #1e293b;
   font-size: 24px;
   cursor: pointer;
   transition: color 0.3s;
 }
 
 .close-btn:hover {
-  color: #ff4d4d;
+  color: #ef4444;
 }
 
 .hamburger-menu {
   position: fixed;
   left: 10px;
   top: 10px;
-  background: #1e293b;
+  background: #1e40af;
   color: white;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   z-index: 1100;
-  transition: background 0.3s
+  transition: background 0.3s;
+}
+
+.hamburger-menu:hover {
+  background: #2563eb;
 }

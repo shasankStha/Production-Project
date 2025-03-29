@@ -26,4 +26,4 @@ def record_attendance(cid, date_str):
 
     # Wait for transaction receipt
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    return tx_receipt
+    return tx_receipt, tx_hash

@@ -9,8 +9,6 @@ from src.models.user import User
 from dotenv import load_dotenv
 import os
 
-from src.services.ipfs_store import store_attendance_for_date
-
 load_dotenv()
 
 def create_app():
@@ -67,8 +65,5 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        db.create_all()
-
-        print(store_attendance_for_date("2025-03-29"))
-        
+        db.create_all()        
     socketio.run(app)

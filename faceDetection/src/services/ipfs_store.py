@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from src.models.attendance import Attendance
 from src.models.attendance_summary import AttendanceSummary
+from src.models.blockchain_record import BlockchainRecord
 from src.utils.extensions import db
 import os
 import subprocess
@@ -10,7 +11,7 @@ import time
 import platform
 from src.blockchain.record_on_chain import record_attendance
 
-def store_attendance_for_date(date_str):
+def store_attendance_ipfs(date_str):
     try:
         target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
     except ValueError as e:
@@ -61,11 +62,18 @@ def store_attendance_for_date(date_str):
             print("[INFO] Attendance summary updated with IPFS CID.")
         
         # Save the IPFS CID and date to the blockchain
-        tx_receipt = record_attendance(cid, date_str)
+        tx_receipt, tx_hash = record_attendance(cid, date_str)
         if tx_receipt:
             print("[INFO] Blockchain record created successfully.")
 
-        return True
+        blockchain_record = BlockchainRecord(
+            summary_id = attendance_summary.summary_id,
+            transaction_hash = tx_hash
+        )
+        db.session.add(blockchain_record)
+        db.session.commit()
+
+        return tx_receipt
     except Exception as e:
         print(f"[ERROR] An error occurred while storing attendance for {date_str}: {str(e)}")
         return None
