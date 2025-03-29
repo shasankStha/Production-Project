@@ -20,3 +20,4 @@ flask-cors
 flask_socketio
 flask-migrate
 flask-bcrypt
+Flask-Mail

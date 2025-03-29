@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from src.utils.extensions import socketio, db,bcrypt,jwt
+from src.utils.extensions import socketio, db,bcrypt,jwt, mail
 from src.routes.register import register_bp
 from src.routes.video import video_bp
 from src.routes.auth import auth_bp
@@ -20,6 +20,7 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     socketio.init_app(app, cors_allowed_origins="*")
+    mail.init_app(app)
 
     # Register Blueprints
     app.register_blueprint(register_bp)

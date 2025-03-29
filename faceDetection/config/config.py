@@ -46,9 +46,15 @@ RECOGNITION_INTERVAL = 4 #No of frames
 RECOGNITION_THRESHOLD = 0.6
 RECOGITION_TIMEOUT = 2 #No of sec to be inserted in database
 
-# Database
+#Database
 class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.getenv('SECRET_KEY')
 
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.getenv("ADMIN_EMAIL")
+    MAIL_PASSWORD = os.getenv("ADMIN_PASSWORD")  
+    MAIL_DEFAULT_SENDER = os.getenv("ADMIN_EMAIL")

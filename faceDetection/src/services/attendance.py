@@ -2,6 +2,7 @@ from datetime import datetime
 from src.models.attendance import Attendance
 from src.models.attendance_summary import AttendanceSummary
 from src.models.user import User
+from src.services.send_email import send_attendance_email
 
 def insert_attendance(username, summary_id,db):
     try:
@@ -13,13 +14,14 @@ def insert_attendance(username, summary_id,db):
         existing_attendance = db.session.query(Attendance).filter_by(user_id=user_id, summary_id=summary_id).first()
 
         if existing_attendance:
-            print(f"Attendance already recorded for user '{username}' in summary {summary_id}.")
+            # print(f"Attendance already recorded for user '{username}' in summary {summary_id}.")
             return True
 
+        attendance_time = datetime.utcnow()
         attendance = Attendance(
             user_id=user_id,
             summary_id=summary_id,
-            timestamp=datetime.utcnow()
+            timestamp=attendance_time
         )
         db.session.add(attendance)
         db.session.commit()
@@ -28,6 +30,9 @@ def insert_attendance(username, summary_id,db):
         if summary:
             summary.present_count += 1
             db.session.commit()
+
+        send_attendance_email(user.email, user.first_name, attendance_time, user_id)
+
 
         return True
     except Exception as e:
