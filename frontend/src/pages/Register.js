@@ -59,6 +59,7 @@ const Register = () => {
 
   return (
     <div className="register-container">
+      <h2>Register User</h2>
       <Sidebar/>
       <div className="video-wrapper">
         <VideoFeed attendance={false} />

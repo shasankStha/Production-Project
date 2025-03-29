@@ -1,17 +1,13 @@
-.attendance-container {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .attendance-container ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .attendance-container li {
-    background: #f4f4f4;
-    margin: 5px 0;
-    padding: 10px;
-    border-radius: 5px;
-  }
+.video-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: white;
+  padding-bottom: 10px;
+}
+
+h2 {
+  text-align: center;
+  padding: 20px;
+}
   

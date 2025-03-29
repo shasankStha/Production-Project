@@ -8,8 +8,10 @@ const Attendance=()=>{
     return (
         <div className="home-container">
             <Sidebar/>
-            <h1>Facial Recognition Attendance System</h1>
-            <VideoFeed attendance={true}/>
+            <h2>Facial Recognition Attendance System</h2>
+            <div className="video-wrapper">
+                <VideoFeed attendance={true}/>
+            </div>
         </div>
     );
 }
