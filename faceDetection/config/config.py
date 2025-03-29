@@ -15,7 +15,6 @@ OFFSET_PERCENTAGE_H = 20
 # Directories
 IMAGE_DIR = "static/"
 MODEL_PATH = "trained_models/face_recognition_model.pkl"
-CSV_FILE = os.path.join("database", "users.csv")
 
 # Ensure model exists
 if not os.path.isfile(MODEL_PATH):
@@ -24,14 +23,6 @@ if not os.path.isfile(MODEL_PATH):
 
 # Ensure directories exist
 os.makedirs(IMAGE_DIR, exist_ok=True)
-os.makedirs("database", exist_ok=True)
-
-# Ensure CSV file exists
-if not os.path.exists(CSV_FILE):
-    with open(CSV_FILE, mode="w", newline="") as file:
-        import csv
-        writer = csv.writer(file)
-        writer.writerow(["User ID", "Name", "Email", "Image Path"])
 
 ##Image Quality For Live Streaming
 IMG_JPEG_QUALITY = 50
