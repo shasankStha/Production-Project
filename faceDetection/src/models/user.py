@@ -1,4 +1,3 @@
-from datetime import datetime, date
 from src.utils.extensions import db, bcrypt
 from src.models.notification import Notification
 from src.models.attendance import Attendance

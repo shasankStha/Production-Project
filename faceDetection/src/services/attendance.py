@@ -17,7 +17,7 @@ def insert_attendance(username, summary_id,db):
             # print(f"Attendance already recorded for user '{username}' in summary {summary_id}.")
             return True
 
-        attendance_time = datetime.utcnow()
+        attendance_time = datetime.now().astimezone()
         attendance = Attendance(
             user_id=user_id,
             summary_id=summary_id,
