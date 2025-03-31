@@ -51,11 +51,15 @@ const AdminDashboard = () => {
       </div>
 
       {modalOpen && selectedDate && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setModalOpen(false)}>&times;</span>
+        <div className="modal" onClick={() => setModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <span className="close" onClick={() => setModalOpen(false)}>
+              &times;
+            </span>
             <h3>Attendance for {selectedDate}</h3>
-            <AdminAttendanceTable records={attendanceData[selectedDate]} />
+            <div className="modal-body">
+              <AdminAttendanceTable records={attendanceData[selectedDate]} />
+            </div>
           </div>
         </div>
       )}

@@ -8,6 +8,8 @@ from src.routes.admin import admin_bp
 from src.models.user import User
 from dotenv import load_dotenv
 import os
+# from src.blockchain.get_cid_from_blockchain import get_attendance
+# from src.services.ipfs_store import ipfs_get_data
 
 load_dotenv()
 
@@ -65,5 +67,7 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        db.create_all()        
+        db.create_all() 
+        # print(get_attendance(1))    
+        # print(ipfs_get_data("QmShjPux1dsKyjJEGKLn1sAJFb4FZqCvj96gcAt9WHyScW"))   
     socketio.run(app)

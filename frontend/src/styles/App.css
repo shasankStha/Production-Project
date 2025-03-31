@@ -40,7 +40,7 @@ input::placeholder {
 }
 
 input:focus {
-  border-color: #2563eb;
+  border-color: #000;
   outline: none;
 }
 

@@ -13,7 +13,7 @@ contract AttendanceRecord {
     
     /// @notice Adds a new attendance record.
     /// @param _cid The IPFS CID.
-    /// @param _date The attendance date as a string (e.g., "2025-03-29").
+    /// @param _date The attendance date as a string.
     function addRecord(string memory _cid, string memory _date) public {
         records.push(Record(_cid, _date));
         emit RecordAdded(records.length - 1, _cid, _date);
