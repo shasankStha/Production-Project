@@ -24,3 +24,5 @@ Flask-Mail
 
 web3
 py-solc-x
+
+apscheduler

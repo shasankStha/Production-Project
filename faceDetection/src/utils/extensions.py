@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 import os
 from flask_mail import Mail
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Initialize SocketIO
 socketio = SocketIO()
@@ -22,3 +23,4 @@ jwt = JWTManager()
 
 mail = Mail()
 
+scheduler = BackgroundScheduler()

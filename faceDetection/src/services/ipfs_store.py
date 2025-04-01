@@ -73,6 +73,12 @@ def store_attendance_ipfs(date_str):
         db.session.add(blockchain_record)
         db.session.commit()
 
+        if attendance_summary and blockchain_record:
+            attendance_summary.blockchain_records.append(blockchain_record)
+            db.session.commit()
+            print("[INFO] Attendance summary updated with Blockchain Record ID.")
+
+
         return tx_receipt
     except Exception as e:
         print(f"[ERROR] An error occurred while storing attendance for {date_str}: {str(e)}")
