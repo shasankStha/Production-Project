@@ -37,8 +37,8 @@ RECOGNITION_INTERVAL = 4 #No of frames
 RECOGNITION_THRESHOLD = 0.6
 RECOGITION_TIMEOUT = 2 #No of sec to be inserted in database
 
-SCHEDULE_HOUR = 17  # Example: 11 PM
-SCHEDULE_MINUTE = 16  # Example: 59 minutes past the hour
+SCHEDULE_HOUR = 14  # Example: 11 PM
+SCHEDULE_MINUTE = 41  # Example: 59 minutes past the hour
 
 
 #Database

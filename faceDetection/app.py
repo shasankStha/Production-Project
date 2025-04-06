@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 from src.utils.extensions import socketio, db,bcrypt,jwt, mail
 from src.routes.register import register_bp
 from src.routes.video import video_bp
@@ -11,7 +12,7 @@ import os
 from src.utils.scheduler import start_scheduler
 
 load_dotenv()
-
+migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_object("config.config.Config")
@@ -22,6 +23,7 @@ def create_app():
     jwt.init_app(app)
     socketio.init_app(app, cors_allowed_origins="*")
     mail.init_app(app)
+    migrate.init_app(app, db)
 
     # Register Blueprints
     app.register_blueprint(register_bp)
@@ -66,7 +68,7 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        db.create_all()
+        # db.create_all()
         start_scheduler(app)
 
     socketio.run(app)

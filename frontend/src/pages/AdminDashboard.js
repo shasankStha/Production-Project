@@ -6,36 +6,58 @@ import "react-calendar/dist/Calendar.css";
 import "../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
-  const [attendanceData, setAttendanceData] = useState({});
+  const [attendanceSummarySet, setAttendanceSummarySet] = useState(new Set());
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [attendanceRecords, setAttendanceRecords] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
-    fetchAttendanceRecords();
+    fetchAttendanceSummary();
   }, []);
 
-  const fetchAttendanceRecords = async () => {
+  const fetchAttendanceSummary = async () => {
     try {
-      const response = await fetch("http://localhost:5000/admin/attendance_records");
+      const response = await fetch("http://localhost:5000/admin/attendance_summary");
+      const data = await response.json();
+  
+      if (data.success) {
+        setAttendanceSummarySet(new Set(data.attendance_summary));
+      }
+    } catch (err) {
+      console.error("Error fetching attendance summary:", err);
+    }
+  };
+
+  const fetchAttendanceDetails = async (attendanceDate) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/admin/attendance_records/${attendanceDate}`);
       const data = await response.json();
 
       if (data.success) {
-        setAttendanceData(data.attendance_records);
+        setAttendanceRecords(data.attendance_records);
+      }else{
+        setAttendanceRecords(null)
       }
     } catch (err) {
-      console.error("Error fetching data:", err);
+      console.error("Error fetching detailed attendance records:", err);
+    }finally {
+      setLoading(false);
     }
   };
 
   const highlightDates = ({ date }) => {
     const dateString = formatDate(date);
-    return attendanceData[dateString] ? "highlight" : null;
+    return attendanceSummarySet.has(dateString) ? "highlight" : null;
   };
 
   const handleDateClick = (date) => {
     const dateString = formatDate(date);
-    if (attendanceData[dateString]) {
+    if (attendanceSummarySet.has(dateString)) {
       setSelectedDate(dateString);
+      fetchAttendanceDetails(dateString);
       setModalOpen(true);
     }
   };
@@ -65,7 +87,11 @@ const AdminDashboard = () => {
             </span>
             <h3>Attendance for {selectedDate}</h3>
             <div className="modal-body">
-              <AdminAttendanceTable records={attendanceData[selectedDate]} />
+            {loading ? (
+                <p>Loading records...</p>
+              ) : (
+                <AdminAttendanceTable records={attendanceRecords} />
+              )}
             </div>
           </div>
         </div>

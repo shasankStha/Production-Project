@@ -5,6 +5,8 @@ from src.models.attendance import Attendance
 from src.models.attendance_summary import AttendanceSummary
 from src.utils.extensions import db
 from src.services.ipfs_store import store_attendance_ipfs
+from src.utils.retrieve_attendance_blockchain import retrieve_attendance_summary_and_data
+import json
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -73,12 +75,10 @@ def store_attendance():
     Trigger storing attendance records for a given date in IPFS and Blockchain.
     """
     try:
-        # Ensure only admin users can perform this action
         current_user = get_jwt_identity()
         if current_user["role"] != "admin":
             return jsonify({"message": "Access denied"}), 403
 
-        # Get date from request
         data = request.get_json()
         date_str = data.get("date")
         if not date_str:
@@ -97,4 +97,54 @@ def store_attendance():
 
     except Exception as e:
         print(f"[ERROR] Failed to store attendance: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+
+@admin_bp.route("/attendance_summary", methods=["GET"])
+def get_attendance_summary():
+    try:
+        attendance_summary = db.session.query(AttendanceSummary.attendance_date).all()
+
+        summary_data = [record.attendance_date.strftime("%Y-%m-%d") for record in attendance_summary]
+        
+        return jsonify({"success": True, "attendance_summary": summary_data})
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch attendance summary: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@admin_bp.route("/attendance_records/<attendance_date>", methods=["GET"])
+def get_attendance_records_by_date(attendance_date):
+    try:
+        attendance_data = retrieve_attendance_summary_and_data(attendance_date)
+        if "error" in attendance_data:
+            return jsonify({"success": False, "error": attendance_data["error"]}), 500
+        
+        if not attendance_data or not attendance_data.get("attendance_records"):
+            return jsonify({"success": False, "error": "No records found for the given date or blockchain data not ready."}), 404
+        
+        ipfs_data = json.loads(attendance_data["ipfs_data"])
+        attendance_records = ipfs_data["attendance_records"]
+
+        if not attendance_records:
+            return jsonify({"success": False, "error": "No attendance records found."}), 404
+
+
+        records = []
+        for record in attendance_records:
+            user = User.query.get(record["user_id"])
+            if user:
+                records.append({
+                    "attendance_id": record["attendance_id"],
+                    "user_id": record["user_id"],
+                    "username": user.username,
+                    "name": f"{user.first_name} {user.last_name}",
+                    "time": record["timestamp"]
+                })
+
+        return jsonify({"success": True, "attendance_records": records})
+
+    
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch attendance records for date {attendance_date}: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500

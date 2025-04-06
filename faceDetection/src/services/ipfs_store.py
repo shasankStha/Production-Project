@@ -39,6 +39,9 @@ def store_attendance_ipfs(date_str):
                 "summary_id": record.summary_id,
                 "timestamp": record.timestamp.isoformat()
             })
+
+        blockchain_date_str = str(attendance_summary.attendance_date)
+
         
         # Prepare the data to store
         data_to_store = {
@@ -62,14 +65,16 @@ def store_attendance_ipfs(date_str):
             print("[INFO] Attendance summary updated with IPFS CID.")
         
         # Save the IPFS CID and date to the blockchain
-        tx_receipt, tx_hash = record_attendance(cid, date_str)
+        tx_receipt, tx_hash, blockchain_record_id = record_attendance(cid, blockchain_date_str)
         if tx_receipt:
             print("[INFO] Blockchain record created successfully.")
 
         blockchain_record = BlockchainRecord(
-            summary_id = attendance_summary.summary_id,
-            transaction_hash = tx_hash
+            summary_id=attendance_summary.summary_id,
+            transaction_hash=tx_hash,
+            blockchain_record_id=blockchain_record_id
         )
+
         db.session.add(blockchain_record)
         db.session.commit()
 
@@ -77,7 +82,6 @@ def store_attendance_ipfs(date_str):
             attendance_summary.blockchain_records.append(blockchain_record)
             db.session.commit()
             print("[INFO] Attendance summary updated with Blockchain Record ID.")
-
 
         return tx_receipt
     except Exception as e:

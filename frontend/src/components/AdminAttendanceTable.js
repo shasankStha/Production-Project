@@ -12,22 +12,22 @@ const AdminAttendanceTable = ({ records }) => {
               <th>SN</th>
               <th>Username</th>
               <th>Full Name</th>
-              <th>Time</th>
+              <th>Timestamp</th>
             </tr>
           </thead>
           <tbody>
-            {records.length > 0 ? (
+          {Array.isArray(records) && records.length > 0 ? (
               records.map((record, index) => (
                 <tr key={record.attendance_id} className="hover-row">
                   <td>{index + 1}</td>
                   <td>{record.username}</td>
                   <td>{record.name}</td>
-                  <td>{record.time}</td>
+                  <td>{new Date(record.time).toLocaleString()}</td> 
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center">No records found.</td>
+                <td colSpan="4" className="text-center">No records found for this date.</td>
               </tr>
             )}
           </tbody>

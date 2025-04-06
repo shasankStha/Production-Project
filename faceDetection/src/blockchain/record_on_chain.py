@@ -26,4 +26,11 @@ def record_attendance(cid, date_str):
 
     # Wait for transaction receipt
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    return tx_receipt, tx_hash
+
+    logs = attendance_contract.events.RecordAdded().process_receipt(tx_receipt)
+    if logs and len(logs) > 0:
+        record_id = logs[0]['args']['recordId']
+    else:
+        raise Exception("RecordAdded event not found in transaction receipt")
+    
+    return tx_receipt, tx_hash.hex(), record_id

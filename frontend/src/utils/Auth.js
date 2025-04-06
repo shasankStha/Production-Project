@@ -15,7 +15,7 @@ export const decodeToken = (token) => {
     const base64Payload = token.split(".")[1];
     if (!base64Payload) return null;
     const decoded = JSON.parse(atob(base64Payload));
-    console.log(decoded)
+    // console.log(decoded)
 
     // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000);
