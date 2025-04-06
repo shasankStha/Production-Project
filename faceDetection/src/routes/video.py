@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, request, current_app
-from src.services.live_stream import generate_frames, release_camera
+from src.services.live_stream import generate_frames
 from src.utils.extensions import db
 
 video_bp = Blueprint("video", __name__)
@@ -13,6 +13,8 @@ def video_feed():
             attendance = attendance.lower() == "true"
         else:
             attendance = False
+
+        print(f"[DEBUG] video_feed called. Attendance = {attendance}")
             
         return Response(generate_frames(attendance, current_app._get_current_object(), db), mimetype="multipart/x-mixed-replace; boundary=frame")
     except Exception as e:

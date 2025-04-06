@@ -24,6 +24,3 @@ def get_attendance(record_id):
     except Exception as e:
         print(f"[ERROR] Failed to retrieve record: {e}")
         return None
-    
-if __name__ == "__main__":
-    get_attendance(1)

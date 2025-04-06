@@ -9,7 +9,7 @@ const AdminAttendanceTable = ({ records }) => {
         <table className="styled-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th>SN</th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Time</th>

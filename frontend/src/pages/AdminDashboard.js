@@ -28,17 +28,24 @@ const AdminDashboard = () => {
   };
 
   const highlightDates = ({ date }) => {
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = formatDate(date);
     return attendanceData[dateString] ? "highlight" : null;
   };
 
   const handleDateClick = (date) => {
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = formatDate(date);
     if (attendanceData[dateString]) {
       setSelectedDate(dateString);
       setModalOpen(true);
     }
   };
+
+  const formatDate = (date) => {
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - offset * 60 * 1000);
+    return localDate.toISOString().split("T")[0];
+  };
+  
 
   return (
     <div className="admin-container">

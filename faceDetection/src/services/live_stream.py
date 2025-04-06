@@ -24,6 +24,9 @@ mtcnn = MTCNN(keep_all=True, device=device)
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 embeddings = {} 
 
+cap = None
+
+
 if os.path.exists(MODEL_PATH):
     data = joblib.load(MODEL_PATH)
     embeddings = data.get('embeddings', {})
@@ -103,7 +106,7 @@ def generate_frames(attendance:False,app,db):
                 # Spoofing detection
                 spoofing_test, conf = identify_real_or_fake(frame)
                 face_roi = frame[y:y+h, x:x+w]
-                if spoofing_test == 'fake' or spoofing_test == 'real':
+                if spoofing_test in ['fake', 'real']:
                     color = (0, 255, 0) if spoofing_test == "real" else (0, 0, 255)
                     cv2.putText(frame, f"{spoofing_test.upper()} {int(conf * 100)}%", (50, 50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
