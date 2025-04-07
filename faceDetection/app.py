@@ -6,10 +6,12 @@ from src.routes.register import register_bp
 from src.routes.video import video_bp
 from src.routes.auth import auth_bp
 from src.routes.admin import admin_bp
+from src.routes.user import user_bp
 from src.models.user import User
 from dotenv import load_dotenv
 import os
 from src.utils.scheduler import start_scheduler
+from src.services.ipfs_store import is_ipfs_daemon_running, start_ipfs_daemon
 
 load_dotenv()
 migrate = Migrate()
@@ -30,6 +32,7 @@ def create_app():
     app.register_blueprint(video_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(admin_bp, url_prefix="/admin")
+    app.register_blueprint(user_bp, url_prefix="/user")
     
     @app.route("/")
     def index():
@@ -62,6 +65,11 @@ def create_app():
             db.session.add(admin_user)
             db.session.commit()
             print("Admin created.")
+    
+    if not is_ipfs_daemon_running():
+        print("[INFO] IPFS daemon is not running. Attempting to start it...")
+        if not start_ipfs_daemon():
+            print("[ERROR] Unable to start IPFS daemon.")
     
     return app
 

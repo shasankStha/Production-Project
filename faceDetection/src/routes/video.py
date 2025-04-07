@@ -13,8 +13,6 @@ def video_feed():
             attendance = attendance.lower() == "true"
         else:
             attendance = False
-
-        print(f"[DEBUG] video_feed called. Attendance = {attendance}")
             
         return Response(generate_frames(attendance, current_app._get_current_object(), db), mimetype="multipart/x-mixed-replace; boundary=frame")
     except Exception as e:

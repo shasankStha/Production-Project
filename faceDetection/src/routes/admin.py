@@ -10,25 +10,25 @@ import json
 
 admin_bp = Blueprint("admin", __name__)
 
-@admin_bp.route("/register", methods=["POST"])
-@jwt_required()
-def is_admin():
-    current_user = get_jwt_identity()
-    if current_user["role"] != "admin":
-        return jsonify({"message": "Access denied"}), 403
+# @admin_bp.route("/register", methods=["POST"])
+# @jwt_required()
+# def is_admin():
+#     current_user = get_jwt_identity()
+#     if current_user["role"] != "admin":
+#         return jsonify({"message": "Access denied"}), 403
 
-    data = request.get_json()
-    new_user = User(
-        username=data["username"],
-        email=data["email"],
-        role=data.get("role", "user")
-    )
-    new_user.set_password(data["password"])
+#     data = request.get_json()
+#     new_user = User(
+#         username=data["username"],
+#         email=data["email"],
+#         role=data.get("role", "user")
+#     )
+#     new_user.set_password(data["password"])
     
-    db.session.add(new_user)
-    db.session.commit()
+#     db.session.add(new_user)
+#     db.session.commit()
     
-    return jsonify({"message": "User registered successfully"}), 201
+#     return jsonify({"message": "User registered successfully"}), 201
 
 
 @admin_bp.route("/attendance_records", methods=["GET"])
@@ -117,11 +117,9 @@ def get_attendance_summary():
 def get_attendance_records_by_date(attendance_date):
     try:
         attendance_data = retrieve_attendance_summary_and_data(attendance_date)
-        if "error" in attendance_data:
+        if "error" in attendance_data or not attendance_data:
             return jsonify({"success": False, "error": attendance_data["error"]}), 500
         
-        if not attendance_data or not attendance_data.get("attendance_records"):
-            return jsonify({"success": False, "error": "No records found for the given date or blockchain data not ready."}), 404
         
         ipfs_data = json.loads(attendance_data["ipfs_data"])
         attendance_records = ipfs_data["attendance_records"]

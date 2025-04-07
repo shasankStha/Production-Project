@@ -19,7 +19,7 @@ def get_attendance(record_id):
     try:
         record = attendance_contract.functions.records(record_id).call()
         cid, date_str = record
-        print(f"[INFO] CID: {cid}, Date: {date_str}")
+        # print(f"[INFO] CID: {cid}, Date: {date_str}")
         return {"cid": cid, "date": date_str}
     except Exception as e:
         print(f"[ERROR] Failed to retrieve record: {e}")

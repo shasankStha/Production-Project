@@ -1,17 +1,82 @@
+
 .dashboard-container {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .content {
-    flex-grow: 1;
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.attendance-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: center;
+}
+
+.react-calendar {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border: none;
+  font-family: inherit;
+  line-height: 1.125em;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.react-calendar__tile {
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.react-calendar__tile--active {
+  background: #006eff;
+  color: white;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #e8f0fe;
+}
+
+.highlight {
+  background-color: #34c759 !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .admin-container {
     padding: 20px;
-    overflow-y: auto;
   }
-  
+
+  .dashboard-title {
+    font-size: 24px;
+  }
+}

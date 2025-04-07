@@ -11,7 +11,10 @@ export const AuthProvider = ({ children }) => {
     const token = getToken();
     if (token) {
       const decoded = decodeToken(token);
-      setUser(decoded?.sub || null);
+      setUser({
+        userId: decoded?.sub ?? null,
+        role: decoded?.role ?? null,
+      });
     }
     setLoading(false);
   }, []);
@@ -19,7 +22,10 @@ export const AuthProvider = ({ children }) => {
   const login = (token) => {
     setToken(token);
     const decoded = decodeToken(token);
-    setUser(decoded?.sub || null);
+    setUser({
+      userId: decoded?.sub ?? null,
+      role: decoded?.role ?? null,
+    });
   };
 
   const logout = () => {

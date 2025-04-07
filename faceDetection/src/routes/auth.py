@@ -13,7 +13,7 @@ def login():
 
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
-        access_token = create_access_token(identity={"user_id": user.user_id, "role": user.role})
+        access_token = create_access_token(identity=str(user.user_id), additional_claims={"role": user.role})
         return jsonify({"access_token": access_token, "role": user.role}), 200
     
     return jsonify({"message": "Invalid credentials"}), 401

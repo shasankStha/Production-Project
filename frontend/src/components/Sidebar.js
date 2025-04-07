@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaHome, FaUser, FaClipboardList, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaTimes,
+  FaHome,
+  FaUser,
+  FaClipboardList,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Sidebar.css";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const { logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -38,42 +45,55 @@ const Sidebar = () => {
 
   return (
     <>
-        <div className={`hamburger-menu ${isOpen ? "hidden":""}`} onClick={toggleSidebar}>
-          <FaBars />
+      <div
+        className={`hamburger-menu ${isOpen ? "hidden" : ""}`}
+        onClick={toggleSidebar}
+      >
+        <FaBars />
+      </div>
+
+      <div className={`sidebar ${isOpen ? "open" : ""}`}>
+        <div className="close-btn" onClick={toggleSidebar}>
+          <FaTimes />
         </div>
 
-        <div className={`sidebar ${isOpen ? "open" : ""}`}>
-          <div className="close-btn" onClick={toggleSidebar}>
-            <FaTimes />
-          </div>
+        <ul>
+          <li>
+            <Link
+              to={
+                user?.role === "admin" ? "/admin-dashboard" : "/user-dashboard"
+              }
+            >
+              <FaHome className="icon" />
+              <span>Dashboard</span>
+            </Link>
+          </li>
 
-          <ul>
-            <li>
-              <Link to="/admin-dashboard">
-                <FaHome className="icon" />
-                <span>Dashboard</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/register">
-                <FaUser className="icon" />
-                <span>Register</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/attendance">
-                <FaClipboardList className="icon" />
-                <span>Attendance</span>
-              </Link>
-            </li>
-            <li>
+          {user?.role === "admin" && (
+            <>
+              <li>
+                <a href="/register">
+                  <FaUser className="icon" />
+                  <span>Register</span>
+                </a>
+              </li>
+              <li>
+                <a href="/attendance">
+                  <FaClipboardList className="icon" />
+                  <span>Attendance</span>
+                </a>
+              </li>
+            </>
+          )}
+
+          <li>
             <div className="logout-btn" onClick={handleLogout}>
-            <FaSignOutAlt className="icon" />
-            <span>Logout</span>
-          </div>
-            </li>
-          </ul>
-        </div>
+              <FaSignOutAlt className="icon" />
+              <span>Logout</span>
+            </div>
+          </li>
+        </ul>
+      </div>
     </>
   );
 };

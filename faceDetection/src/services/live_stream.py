@@ -25,7 +25,7 @@ resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 embeddings = {} 
 
 cap = None
-
+is_attendance_active = False
 
 if os.path.exists(MODEL_PATH):
     data = joblib.load(MODEL_PATH)
@@ -67,7 +67,8 @@ def identify_face(face_img):
         return None
 
 def generate_frames(attendance:False,app,db):
-    global embeddings, cap
+    global embeddings, cap, is_attendance_active
+    is_attendance_active = attendance
     try:
         cap = cv2.VideoCapture(0)
         cap.set(3, CAM_WIDTH)
@@ -117,6 +118,8 @@ def generate_frames(attendance:False,app,db):
                         if frame_counter % RECOGNITION_INTERVAL == 0:
                             def update_recognition():
                                 global last_identified_person
+                                if not is_attendance_active:
+                                    return
                                 identified = identify_face(face_roi)
                                 with lock:
                                     last_identified_person = identified
@@ -124,7 +127,7 @@ def generate_frames(attendance:False,app,db):
                                 if app is not None and last_identified_person:
                                     with app.app_context():
                                         name = last_identified_person.split(".")[1]
-                                        if not insert_attendance(username=last_identified_person.split(".")[0],
+                                        if is_attendance_active and not insert_attendance(username=last_identified_person.split(".")[0],
                                                              summary_id=summary.summary_id,
                                                              db=db):
                                             print(f"[Error] Attendance for {name}.")
