@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+// import Header from "../components/Header";
+// import Footer from "../components/Footer";
 import "../styles/UserDashboard.css";
 import { getToken } from "../utils/Auth";
 
@@ -42,12 +42,12 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="user-dashboard-container">
       <Sidebar />
-      <div className="main-content">
-        <div className="attendance-container">
-          <h2 className="dashboard-title">User Dashboard</h2>
-          <div className="calendar-container">
+      <div className="user-main-content">
+        <div className="user-attendance-container">
+          <h2 className="user-dashboard-title">User Dashboard</h2>
+          <div className="user-calendar-container">
             <Calendar tileClassName={tileClassName} />
           </div>
         </div>

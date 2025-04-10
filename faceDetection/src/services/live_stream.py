@@ -123,16 +123,16 @@ def generate_frames(attendance:False,app,db):
                                 identified = identify_face(face_roi)
                                 with lock:
                                     last_identified_person = identified
-
-                                if app is not None and last_identified_person:
-                                    with app.app_context():
-                                        name = last_identified_person.split(".")[1]
-                                        if is_attendance_active and not insert_attendance(username=last_identified_person.split(".")[0],
-                                                             summary_id=summary.summary_id,
-                                                             db=db):
-                                            print(f"[Error] Attendance for {name}.")
-
                             thread_pool.submit(update_recognition)
+
+                        if app is not None and last_identified_person:
+                            with app.app_context():
+                                name = last_identified_person.split(".")[1]
+                                if is_attendance_active and not insert_attendance(username=last_identified_person.split(".")[0],
+                                                        summary_id=summary.summary_id,
+                                                        db=db):
+                                    print(f"[Error] Attendance for {name}.")
+
 
                         with lock:
                             if last_identified_person:

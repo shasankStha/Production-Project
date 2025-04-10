@@ -7,6 +7,7 @@ from src.utils.extensions import db
 from src.services.ipfs_store import store_attendance_ipfs
 from src.utils.retrieve_attendance_blockchain import retrieve_attendance_summary_and_data
 import json
+from datetime import date, datetime
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -31,42 +32,42 @@ admin_bp = Blueprint("admin", __name__)
 #     return jsonify({"message": "User registered successfully"}), 201
 
 
-@admin_bp.route("/attendance_records", methods=["GET"])
-def get_attendance_records():
-    try:
-        records = db.session.query(
-            Attendance.attendance_id,
-            User.username,
-            User.first_name,
-            User.last_name,
-            Attendance.timestamp,
-            AttendanceSummary.attendance_date
-        ).join(User, Attendance.user_id == User.user_id)\
-         .join(AttendanceSummary, Attendance.summary_id == AttendanceSummary.summary_id)\
-         .order_by(Attendance.timestamp.desc()).all()
+# @admin_bp.route("/attendance_records", methods=["GET"])
+# def get_attendance_records():
+#     try:
+        # records = db.session.query(
+        #     Attendance.attendance_id,
+        #     User.username,
+        #     User.first_name,
+        #     User.last_name,
+        #     Attendance.timestamp,
+        #     AttendanceSummary.attendance_date
+        # ).join(User, Attendance.user_id == User.user_id)\
+        #  .join(AttendanceSummary, Attendance.summary_id == AttendanceSummary.summary_id)\
+        #  .order_by(Attendance.timestamp.desc()).all()
         
-        grouped_attendance = {}
+#         grouped_attendance = {}
 
 
-        for record in records:
-            attendance_date = record.attendance_date.strftime("%Y-%m-%d")
-            user_data = {
-                "attendance_id": record.attendance_id,
-                "username": record.username,
-                "name": f"{record.first_name} {record.last_name}",
-                "time": record.timestamp.strftime("%H:%M:%S"),
-            }
+#         for record in records:
+#             attendance_date = record.attendance_date.strftime("%Y-%m-%d")
+#             user_data = {
+#                 "attendance_id": record.attendance_id,
+#                 "username": record.username,
+#                 "name": f"{record.first_name} {record.last_name}",
+#                 "time": record.timestamp.strftime("%H:%M:%S"),
+#             }
 
-            # Add user_data under the corresponding attendance_date key
-            if attendance_date not in grouped_attendance:
-                grouped_attendance[attendance_date] = []
+#             # Add user_data under the corresponding attendance_date key
+#             if attendance_date not in grouped_attendance:
+#                 grouped_attendance[attendance_date] = []
             
-            grouped_attendance[attendance_date].append(user_data)
+#             grouped_attendance[attendance_date].append(user_data)
 
-        return jsonify({"success": True, "attendance_records": grouped_attendance})
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch attendance records: {str(e)}")
-        return jsonify({"success": False, "error": str(e)}), 500
+#         return jsonify({"success": True, "attendance_records": grouped_attendance})
+#     except Exception as e:
+#         print(f"[ERROR] Failed to fetch attendance records: {str(e)}")
+#         return jsonify({"success": False, "error": str(e)}), 500
 
 @admin_bp.route("/store_attendance", methods=["POST"])
 @jwt_required()
@@ -117,8 +118,13 @@ def get_attendance_summary():
 def get_attendance_records_by_date(attendance_date):
     try:
         attendance_data = retrieve_attendance_summary_and_data(attendance_date)
+    
         if "error" in attendance_data or not attendance_data:
-            return jsonify({"success": False, "error": attendance_data["error"]}), 500
+            if attendance_date == date.today().isoformat():
+                print("[INFO] Blockchain data unavailable for today. Falling back to Postgres.")
+                return fetch_from_postgres(attendance_date)
+            else:
+                return jsonify({"success": False, "error": attendance_data["error"]}), 500
         
         
         ipfs_data = json.loads(attendance_data["ipfs_data"])
@@ -146,3 +152,44 @@ def get_attendance_records_by_date(attendance_date):
     except Exception as e:
         print(f"[ERROR] Failed to fetch attendance records for date {attendance_date}: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
+    
+def fetch_from_postgres(attendance_date):
+    try:
+        start_datetime = datetime.strptime(attendance_date, "%Y-%m-%d")
+
+        attendance_records = db.session.query(
+            Attendance.attendance_id,
+            User.user_id,
+            User.username,
+            User.first_name,
+            User.last_name,
+            Attendance.timestamp,
+            AttendanceSummary.attendance_date
+        ).join(User, Attendance.user_id == User.user_id)\
+         .join(AttendanceSummary, Attendance.summary_id == AttendanceSummary.summary_id)\
+         .filter(AttendanceSummary.attendance_date == start_datetime.date())\
+         .order_by(Attendance.timestamp.desc()).all()
+        
+        if not attendance_records:
+            return jsonify({"success": False, "error": "No attendance records found in Postgres."}), 404
+
+        records = []
+        for record in attendance_records:
+            records.append({
+                "attendance_id": record.attendance_id,
+                "user_id": record.user_id,
+                "username": record.username,
+                "name": f"{record.first_name} {record.last_name}",
+                "time": record.timestamp.isoformat()
+            })
+
+        return jsonify({
+            "success": True,
+            "attendance_records": records,
+            "source": "postgres",
+            "disclaimer": "Data is fetched from Postgres as today's blockchain record is not yet available."
+        })
+
+    except Exception as e:
+        print(f"[ERROR] Postgres fallback failed: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to fetch from Postgres."}), 500

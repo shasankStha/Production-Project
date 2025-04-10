@@ -11,6 +11,8 @@ const AdminDashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [disclaimer, setDisclaimer] = useState(null);
+  const [source, setSource] = useState(null); 
 
 
   useEffect(() => {
@@ -38,8 +40,12 @@ const AdminDashboard = () => {
 
       if (data.success) {
         setAttendanceRecords(data.attendance_records);
+        setSource(data.source);
+        setDisclaimer(data.disclaimer);
       }else{
         setAttendanceRecords(null)
+        setSource(null);
+        setDisclaimer(null);
       }
     } catch (err) {
       console.error("Error fetching detailed attendance records:", err);
@@ -72,9 +78,9 @@ const AdminDashboard = () => {
   return (
     <div className="admin-container">
       <Sidebar />
-      <h2 className="dashboard-title">Admin Dashboard</h2>
+      <h2 className="admin-dashboard-title">Admin Dashboard</h2>
 
-      <div className="calendar-container">
+      <div className="admin-calendar-container">
         <h3>Select a Date</h3>
         <Calendar tileClassName={highlightDates} onClickDay={handleDateClick} />
       </div>
@@ -90,7 +96,12 @@ const AdminDashboard = () => {
             {loading ? (
                 <p>Loading records...</p>
               ) : (
+                <>
                 <AdminAttendanceTable records={attendanceRecords} />
+                {source === "postgres" && disclaimer && (
+                  <p className="disclaimer">{disclaimer}</p>
+                )}
+              </>
               )}
             </div>
           </div>

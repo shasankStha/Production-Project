@@ -1,19 +1,18 @@
-
-.dashboard-container {
+.user-dashboard-container {
   display: flex;
   min-height: 100vh;
   background-color: #f4f7fa;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.main-content {
+.user-main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 20px;
 }
 
-.attendance-container {
+.user-attendance-container {
   background-color: #ffffff;
   border-radius: 16px;
   padding: 30px;
@@ -24,7 +23,7 @@
   margin-right: auto;
 }
 
-.dashboard-title {
+.user-dashboard-title {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -32,7 +31,7 @@
   color: #333;
 }
 
-.calendar-container {
+.user-calendar-container {
   display: flex;
   justify-content: center;
 }

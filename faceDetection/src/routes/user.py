@@ -1,11 +1,14 @@
 from flask import Blueprint, jsonify
 from src.models.attendance_summary import AttendanceSummary
+from src.models.attendance import Attendance
 from src.models.blockchain_record import BlockchainRecord
 from src.blockchain.get_cid_from_blockchain import get_attendance
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.services.ipfs_store import ipfs_get_data
 from src.models.user import User
 import json
+from datetime import datetime, date
+from src.utils.extensions import db
 
 user_bp = Blueprint("user", __name__)
 
@@ -13,8 +16,8 @@ user_bp = Blueprint("user", __name__)
 @jwt_required()
 def get_user_attendance_dates():
     try:
-        user_id = get_jwt_identity()
-        user = User.query.get(int(user_id))
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
         if not user:
             return jsonify({"success": False, "error": "User not found"}), 404
 
@@ -30,7 +33,33 @@ def get_user_attendance_dates():
                         if int(rec["user_id"]) == int(user_id):
                             attended_dates.append(str(attendance_data.get("date")))
                             break
-        return jsonify({"success": True, "attendance_dates": attended_dates})
+
+        today_str = date.today().isoformat()
+        source = "blockchain"
+        disclaimer = None
+
+        if today_str not in attended_dates:
+            today_attendance = (
+                db.session.query(Attendance)
+                .join(AttendanceSummary, Attendance.summary_id == AttendanceSummary.summary_id)
+                .filter(
+                    Attendance.user_id == user_id,
+                    AttendanceSummary.attendance_date == date.today()
+                )
+                .first()
+            )
+
+            if today_attendance:
+                attended_dates.append(today_str)
+                source = "postgres"
+                disclaimer = "Today's attendance data is from Postgres and not yet recorded on the blockchain."
+
+        return jsonify({
+            "success": True,
+            "attendance_dates": list(attended_dates),
+            "source": source,
+            "disclaimer": disclaimer
+        })
 
     except Exception as e:
         print(f"[ERROR] Fetching attendance dates for user: {str(e)}")

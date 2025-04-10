@@ -22,6 +22,10 @@ def retrieve_attendance_summary_and_data(attendance_summary_date):
         return {"error": "Blockchain record for the given attendance summary not found."}
 
     record_id = blockchain_record.blockchain_record_id
+
+    if not record_id:
+        return {"error": "Record is not yet been written in blockchain."}
+    
     blockchain_data = get_attendance(record_id)
 
     if blockchain_record is None:
