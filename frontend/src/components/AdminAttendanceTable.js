@@ -22,7 +22,7 @@ const AdminAttendanceTable = ({ records }) => {
                   <td>{index + 1}</td>
                   <td>{record.username}</td>
                   <td>{record.name}</td>
-                  <td>{new Date(record.time).toLocaleString()}</td> 
+                  <td>{new Date(record.time).toLocaleString().split(",")[1]}</td> 
                 </tr>
               ))
             ) : (

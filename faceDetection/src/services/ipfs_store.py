@@ -24,6 +24,8 @@ def store_attendance_ipfs(date_str):
             .filter(db.func.date(Attendance.timestamp) == target_date)
             .all()
         )
+        if not attendance_records:
+            return
         
         attendance_summary = (
             db.session.query(AttendanceSummary)
