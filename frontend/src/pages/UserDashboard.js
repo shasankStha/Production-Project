@@ -48,7 +48,7 @@ const UserDashboard = () => {
         <div className="user-attendance-container">
           <h2 className="user-dashboard-title">User Dashboard</h2>
           <div className="user-calendar-container">
-            <Calendar tileClassName={tileClassName} />
+            <Calendar tileClassName={tileClassName} showNeighboringMonth={false} />
           </div>
         </div>
       </div>

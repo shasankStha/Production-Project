@@ -82,7 +82,7 @@ const AdminDashboard = () => {
 
       <div className="admin-calendar-container">
         <h3>Select a Date</h3>
-        <Calendar tileClassName={highlightDates} onClickDay={handleDateClick} />
+        <Calendar tileClassName={highlightDates} onClickDay={handleDateClick} showNeighboringMonth={false} />
       </div>
 
       {modalOpen && selectedDate && (
