@@ -3,9 +3,13 @@ from src.models.attendance import Attendance
 from src.models.attendance_summary import AttendanceSummary
 from src.models.user import User
 from src.services.send_email import send_attendance_email
+from src.utils.extensions import thread_pool
+from flask import current_app
+
 
 def insert_attendance(username, summary_id,db):
     try:
+        # print("[INFO] Attendance started!!!")
         user = db.session.query(User).filter_by(username=username).first()
         if not user:
             raise ValueError(f"User with username {username} not found.")
@@ -32,7 +36,12 @@ def insert_attendance(username, summary_id,db):
             summary.present_count = count
             db.session.commit()
 
-        send_attendance_email(user.email, user.first_name, attendance_time, user_id)
+        def threaded_email_sender(app, user_email, first_name, attendance_time, user_id):
+            with app.app_context():
+                send_attendance_email(app, user_email, first_name, attendance_time, user_id)
+
+        thread_pool.submit(threaded_email_sender, current_app._get_current_object(), user.email, user.first_name, attendance_time, user_id)
+
 
 
         return True
