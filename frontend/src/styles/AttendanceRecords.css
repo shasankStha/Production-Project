@@ -1,0 +1,77 @@
+/* Attendance Records Page Styles */
+.attendance-records-container {
+    padding: 30px;
+    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .attendance-records-container h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1e40af;
+  }
+  
+  .search-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .search-box input,
+  .search-box button {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .attendance-results {
+    margin-top: 20px;
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .attendance-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .attendance-table th,
+  .attendance-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .attendance-table th {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .back-to-dashboard {
+    margin-bottom: 20px;
+  }
+  
+  .back-to-dashboard button {
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .search-box button{
+    color: #FFFFFF;
+  }

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, make_response
 from src.models.attendance_summary import AttendanceSummary
 from src.models.attendance import Attendance
 from src.models.blockchain_record import BlockchainRecord
@@ -23,6 +23,7 @@ def get_user_attendance_dates():
 
         blockchain_record = BlockchainRecord.query.all()
         attended_dates = []
+        total_attendance_days = len(blockchain_record)
 
         for row in blockchain_record:
             if row.blockchain_record_id:
@@ -50,16 +51,20 @@ def get_user_attendance_dates():
             )
 
             if today_attendance:
+                total_attendance_days+=1
                 attended_dates.append(today_str)
                 source = "postgres"
                 disclaimer = "Today's attendance data is from Postgres and not yet recorded on the blockchain."
 
-        return jsonify({
+        response = make_response(jsonify({
             "success": True,
+            "total_attendance_days": total_attendance_days,
             "attendance_dates": list(attended_dates),
             "source": source,
             "disclaimer": disclaimer
-        })
+        }))
+        response.headers["Cache-Control"] = "public, max-age=300"
+        return response
 
     except Exception as e:
         print(f"[ERROR] Fetching attendance dates for user: {str(e)}")

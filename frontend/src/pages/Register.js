@@ -4,7 +4,6 @@ import VideoFeed from "../components/VideoFeed";
 import Sidebar from "../components/Sidebar";
 import "../styles/Register.css";
 
-// Connect to the Socket.IO server
 const socket = io("http://127.0.0.1:5000");
 
 const Register = () => {
@@ -58,63 +57,83 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Register User</h2>
-      <Sidebar/>
-      <div className="video-wrapper">
-        <VideoFeed attendance={false} />
-      </div>
+    <div className="register-page">
+      <Sidebar />
 
-      <div className="form-scroll-container">
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+      <div className="register-content">
+        <h2 className="register-heading">Register User</h2>
+
+        <div className="register-main">
+          <div className="register-video">
+            <VideoFeed attendance={false} />
+          </div>
+
+          <div className="register-form">
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+              />
+            </div>
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter first name"
+              />
+            </div>
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter last name"
+              />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email"
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+              />
+            </div>
+
+            <button
+              className="register-button"
+              onClick={registerUser}
+              disabled={loading}
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+
+            {message && (
+              <div
+                className={`status-message ${
+                  message.includes("successfully") ? "success" : "error"
+                }`}
+              >
+                {message}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            placeholder="Enter first name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            placeholder="Enter last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button className="register-button" onClick={registerUser} disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-        {message && <div className="message">{message}</div>}
       </div>
     </div>
   );

@@ -1,127 +1,229 @@
 .admin-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-    height: 100vh;
-    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
-    color: #333;
-  }
-  
-  .admin-dashboard-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #1e40af;
-  }
-  
-  .admin-calendar-container {
-    margin-top: 20px;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-  }
-  
-  .react-calendar {
-    width: 100%;
-    max-width: 100%;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 18px;
-    color: #333;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .react-calendar__tile {
-    font-weight: bold;
-    padding: 15px;
-    color: #333;
-  }
-  
-  .react-calendar__tile--active {
-    background: #2563eb !important;
-    color: white !important;
-    border-radius: 50%;
-  }
-  
-  .react-calendar__tile:hover {
-    background: #bfdbfe !important;
-    border-radius: 50%;
-  }
-  
-  .highlight {
-    background-color: #ef4444 !important;
-    color: white !important;
-    font-weight: bold;
-    border-radius: 50%;
-    transition: 0.3s;
-  }
-  
-  .highlight:hover {
-    background-color: #dc2626 !important;
-  }
-  
-  /* Modal Styling */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.admin-dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1e40af;
+}
+
+/* Grid Layout for Dashboard Cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1300px;
+  margin-bottom: 30px;
+}
+
+/* Dashboard Cell/Card Styling */
+.dashboard-cell {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-cell:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Calendar Cell Specific Styling */
+.calendar-cell h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #1e3a8a;
+}
+
+/* Chart Cell Specific Styling */
+.chart-cell h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #1e3a8a;
+}
+
+/* Fixed Chart Container for Uniform Chart Heights */
+.chart-container {
+  width: 100%;
+  height: 300px;  /* Set a fixed height for all charts */
+  position: relative;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Back Button for Switching Chart Views */
+.back-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Modal Styling for Attendance Details */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s forwards;
+  z-index: 100;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 750px;
+  max-height: 80vh;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  flex-grow: 1;
+  margin-top: 15px;
+  overflow-y: auto;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ef4444;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    animation: fadeIn 0.3s forwards;
   }
-  
-  .modal-content {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    width: 100%;
-    height: 70vh;
-    max-height: 600px;
-    max-width: 750px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
-    color: #333;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  to {
+    opacity: 1;
   }
-  
-  .modal-body {
-    flex-grow: 1;
-    overflow-y: auto; 
+}
+
+/* React Calendar Styling Enhancements */
+.react-calendar {
+  width: 100% !important;
+  max-width: 100% !important;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 16px;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.react-calendar__navigation button {
+  width: 100%;
+  padding: 12px;
+  color: #2563eb;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.react-calendar__navigation button:hover {
+  background: #e0e7ff;
+}
+
+.react-calendar__tile {
+  font-weight: 600;
+  padding: 15px;
+  color: #333;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.react-calendar__tile--active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-radius: 50%;
+}
+
+.react-calendar__tile:hover {
+  background: #bfdbfe !important;
+  border-radius: 50%;
+}
+
+/* Highlighted Dates on Calendar */
+.highlight {
+  background-color: #38a169 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.highlight:hover {
+  background-color: #dc2626 !important;
+}
+
+/* Disclaimer Styling */
+.disclaimer {
+  color: #b91c1c;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.chart-cell.pie-chart {
+  grid-column: span 1;
+}
+
+.pie-chart .chart-container {
+  height: 400px; /* taller height just for pie */
+}
+
+
+/* Responsive Adjustments for Smaller Screens */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #ef4444;
+
+  .calendar-cell,
+  .chart-cell {
+    flex: 1 1 100%;
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  .disclaimer {
-    color: red;
-    font-style: italic;
-    margin-top: 10px;
-  }
-  
+}

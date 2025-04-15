@@ -1,13 +1,103 @@
+/* Home container */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background: linear-gradient(135deg, #dbeafe, #f0f4f8);
+  color: #333;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Heading styling */
+.home-container h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+/* Video container styles */
 .video-wrapper {
-  width: 100%;
+  width: 80%;
   display: flex;
   justify-content: center;
   background: white;
   padding-bottom: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-h2 {
-  text-align: center;
-  padding: 20px;
+.video-wrapper > .video-container {
+  width: 100%; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
 }
-  
+
+.video-feed {
+  width: 100%;
+  max-height: 720px; /* Adjust this value as needed */
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Button styling */
+.attendance-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.start-stop-btn {
+  padding: 12px 30px; /* Reduced padding for a better size */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  width: auto;
+  min-width: 160px; /* Ensure a minimum width for the button */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.start-stop-btn.start {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.start-stop-btn.stop {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.start-stop-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px); /* Slight hover lift effect */
+}
+
+.start-stop-btn:active {
+  transform: translateY(0); /* Button click effect */
+}
+
+/* Mobile responsiveness for better scaling */
+@media (max-width: 768px) {
+  .video-container {
+    width: 90%;
+  }
+
+  .start-stop-btn {
+    padding: 12px 25px;
+    min-width: 140px;
+  }
+}

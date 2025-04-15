@@ -4,7 +4,7 @@ import "../styles/AdminAttendanceTable.css";
 const AdminAttendanceTable = ({ records }) => {
   return (
     <div className="table-container">
-      <h2 className="table-title">Attendance Records</h2>
+      <h2 className="table-title">Records</h2>
       <div className="overflow-x-auto">
         <table className="styled-table">
           <thead>
@@ -22,7 +22,7 @@ const AdminAttendanceTable = ({ records }) => {
                   <td>{index + 1}</td>
                   <td>{record.username}</td>
                   <td>{record.name}</td>
-                  <td>{new Date(record.time).toLocaleString().split(",")[1]}</td> 
+                  <td>{new Date(record.time).toLocaleString()}</td> 
                 </tr>
               ))
             ) : (

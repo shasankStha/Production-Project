@@ -7,6 +7,7 @@ import {
   FaUser,
   FaClipboardList,
   FaSignOutAlt,
+  FaList
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Sidebar.css";
@@ -72,6 +73,12 @@ const Sidebar = () => {
           {user?.role === "admin" && (
             <>
               <li>
+                <a href="/attendance-records">
+                  <FaClipboardList className="icon" />
+                  <span>Attendance Records</span>
+                </a>
+              </li>
+              <li>
                 <a href="/register">
                   <FaUser className="icon" />
                   <span>Register</span>
@@ -79,7 +86,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <a href="/attendance">
-                  <FaClipboardList className="icon" />
+                  <FaList className="icon" />
                   <span>Attendance</span>
                 </a>
               </li>

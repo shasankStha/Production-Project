@@ -24,7 +24,9 @@ mtcnn = MTCNN(keep_all=True, device=device)
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 embeddings = {} 
 
-cap = None
+cap = cv2.VideoCapture(0)
+cap.set(3, CAM_WIDTH)
+cap.set(4, CAM_HEIGHT)
 is_attendance_active = False
 
 if os.path.exists(MODEL_PATH):
@@ -67,7 +69,7 @@ def identify_face(face_img):
         return None
 
 def generate_frames(attendance:False,app,db):
-    global embeddings, cap, is_attendance_active
+    global embeddings, is_attendance_active
     is_attendance_active = attendance
     try:
         cap = cv2.VideoCapture(0)

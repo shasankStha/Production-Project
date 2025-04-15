@@ -1,29 +1,44 @@
-import {React, useEffect, useState} from "react";
+import { React, useState } from "react";
 import "../styles/Attendance.css";
-import "../components/VideoFeed";
-// import VideoFeed from "../components/VideoFeed";
 import Sidebar from "../components/Sidebar";
+import VideoFeed from "../components/VideoFeed";
 
-const Attendance=()=>{
-    const [videoSrc, setVideoSrc] = useState("");
+const Attendance = () => {
+  const [attendanceActive, setAttendanceActive] = useState(false);
 
-    useEffect(() => {
-        const timestamp = new Date().getTime();
-        setVideoSrc(`http://127.0.0.1:5000/video_feed?attendance=true&_=${timestamp}`);
-    }, []);
-    return (
-        <div className="home-container">
-            <Sidebar/>
-            <h2>Facial Recognition Attendance System</h2>
-            <div className="video-wrapper">
-            <div className="video-container">
-            {videoSrc && (
-                        <img src={videoSrc} alt="Live Video Feed" />
-                    )}
-            </div>
-            </div>
-        </div>
-    );
-}
+  const toggleAttendance = async () => {
+    const newStatus = !attendanceActive;
+    setAttendanceActive(newStatus);
+
+    try {
+      // Ping the video_feed endpoint to trigger backend attendance mode switch
+      await fetch(`http://127.0.0.1:5000/video_feed?attendance=${newStatus}`, {
+        method: "GET",
+      });
+    } catch (error) {
+      console.error("Error toggling attendance:", error);
+    }
+  };
+
+  return (
+    <div className="home-container">
+      <Sidebar />
+
+      <div className="video-wrapper">
+        {/* Show live stream in attendance mode (always reflects attendanceActive) */}
+        <VideoFeed attendance={attendanceActive} />
+      </div>
+
+      <div className="attendance-controls">
+        <button
+          className={`start-stop-btn ${attendanceActive ? "stop" : "start"}`}
+          onClick={toggleAttendance}
+        >
+          {attendanceActive ? "Stop Attendance" : "Start Attendance"}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Attendance;

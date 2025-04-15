@@ -6,6 +6,7 @@ import UserDashboard from "../pages/UserDashboard";
 import Register from "../pages/Register";
 import Attendance from "../pages/Attendance";
 import { useAuth } from "../context/AuthContext";
+import AttendanceRecords from "../pages/AttendanceRecords";
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -23,6 +24,10 @@ function AppRoutes() {
         <Route
           path="/register"
           element={user?.role === "admin" ? <Register /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/attendance-records"
+          element={user?.role === "admin" ? <AttendanceRecords /> : <Navigate to="/login" />}
         />
         <Route
           path="/attendance"
