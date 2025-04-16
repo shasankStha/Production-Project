@@ -79,6 +79,12 @@ const Sidebar = () => {
                 </a>
               </li>
               <li>
+                <a href="/admin/users">
+                  <FaClipboardList className="icon" />
+                  <span>User Management</span>
+                </a>
+              </li>
+              <li>
                 <a href="/register">
                   <FaUser className="icon" />
                   <span>Register</span>

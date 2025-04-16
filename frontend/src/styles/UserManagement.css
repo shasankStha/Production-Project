@@ -1,0 +1,200 @@
+.user-management-container {
+    padding: 30px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  .user-management-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1e40af;
+  }
+  h1{
+    text-align: center;
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .user-table th,
+  .user-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .user-table th {
+    background-color: #eff6ff;
+    font-weight: 600;
+    color: #1e3a8a;
+  }
+  
+  .user-table td {
+    color: #374151;
+  }
+  
+  .user-table button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .user-table .edit-btn {
+    background-color: #2563eb;
+    color: white;
+    margin-right: 8px;
+  }
+  
+  .user-table .edit-btn:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .user-table .delete-btn {
+    background-color: #ef4444;
+    color: white;
+  }
+  
+  .user-table .delete-btn:hover {
+    background-color: #dc2626;
+  }
+  
+  /* Edit Modal Styling */
+  .edit-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .edit-modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .edit-modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+  }
+  
+  .edit-modal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .edit-modal .cancel-btn {
+    background-color: #e5e7eb;
+    color: #111827;
+  }
+  
+  .edit-modal .cancel-btn:hover {
+    background-color: #d1d5db;
+  }
+  
+  .edit-modal .save-btn {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .edit-modal .save-btn:hover {
+    background-color: #1d4ed8;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .dashboard-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f9f9f9;
+  }
+  
+  .edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .edit-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  
+  .cancel-btn, .save-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .cancel-btn {
+    background-color: #ccc;
+  }
+  
+  .save-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .error-text {
+    color: red;
+    margin-bottom: 0.5rem;
+  }
+  

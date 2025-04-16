@@ -13,6 +13,9 @@ def insert_attendance(username, summary_id,db):
         user = db.session.query(User).filter_by(username=username).first()
         if not user:
             raise ValueError(f"User with username {username} not found.")
+        
+        if user.status != 1:
+            return True
                 
         user_id = user.user_id
         existing_attendance = db.session.query(Attendance).filter_by(user_id=user_id, summary_id=summary_id).first()

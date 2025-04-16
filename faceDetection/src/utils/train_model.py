@@ -72,3 +72,43 @@ def train_model(user_name, image_dir):
     except Exception as e:
         print(f"[ERROR] Training failed: {str(e)}")
         return False
+    
+def remove_user_from_model(user_name):
+    try:
+        if not os.path.exists(MODEL_PATH):
+            print("[INFO] Model file does not exist.")
+            return
+
+        data = joblib.load(MODEL_PATH)
+        embeddings = data.get('embeddings', {})
+
+        if user_name in embeddings:
+            del embeddings[user_name]
+            joblib.dump({'embeddings': embeddings}, MODEL_PATH)
+            print(f"[INFO] User '{user_name}' removed from model.")
+        else:
+            print(f"[INFO] User '{user_name}' not found in model.")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to remove user: {str(e)}")
+
+
+def rename_user_in_model(old_name, new_name):
+    try:
+        if not os.path.exists(MODEL_PATH):
+            print("[INFO] Model file does not exist.")
+            return
+
+        data = joblib.load(MODEL_PATH)
+        embeddings = data.get('embeddings', {})
+
+        if old_name not in embeddings:
+            print(f"[INFO] User '{old_name}' not found in model.")
+            return
+
+        embeddings[new_name] = embeddings.pop(old_name)
+        joblib.dump({'embeddings': embeddings}, MODEL_PATH)
+        print(f"[INFO] Renamed '{old_name}' to '{new_name}' in model.")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to rename user: {str(e)}")

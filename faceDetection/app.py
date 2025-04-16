@@ -7,6 +7,7 @@ from src.routes.video import video_bp
 from src.routes.auth import auth_bp
 from src.routes.admin import admin_bp
 from src.routes.user import user_bp
+from src.routes.user_manangement import user_management_bp
 from src.models.user import User
 from dotenv import load_dotenv
 import os
@@ -33,6 +34,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(user_bp, url_prefix="/user")
+    app.register_blueprint(user_management_bp, url_prefix="/admin")
     
     @app.route("/")
     def index():

@@ -11,7 +11,7 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email, status = 1).first()
     if user and user.check_password(password):
         access_token = create_access_token(identity=str(user.user_id), additional_claims={"role": user.role})
         return jsonify({"access_token": access_token, "role": user.role}), 200

@@ -11,6 +11,7 @@ class User(db.Model):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
+    status = db.Column(db.Integer, default=1)
     role = db.Column(db.String, nullable=False, default="user")
 
     def set_password(self, password):

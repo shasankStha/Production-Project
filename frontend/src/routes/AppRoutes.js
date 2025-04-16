@@ -7,6 +7,7 @@ import Register from "../pages/Register";
 import Attendance from "../pages/Attendance";
 import { useAuth } from "../context/AuthContext";
 import AttendanceRecords from "../pages/AttendanceRecords";
+import UserManagement from "../pages/UserManagement";
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -32,6 +33,10 @@ function AppRoutes() {
         <Route
           path="/attendance"
           element={user?.role === "admin" ? <Attendance /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin/users"
+          element={user?.role === "admin" ? <UserManagement /> : <Navigate to="/login" />}
         />
         <Route
           path="/user-dashboard"
