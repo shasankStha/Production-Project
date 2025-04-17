@@ -1,10 +1,15 @@
 import json
 from solcx import compile_standard, install_solc
+import os
 
 # Install a specific Solidity compiler version if needed
 install_solc('0.8.0')
 
-with open("/Users/shashrestha/Documents/Shasank/Production Project/Production-Project/faceDetection/src/blockchain/contracts/AttendanceRecord.sol", "r") as file:
+base_dir = os.path.dirname(os.path.abspath(__file__))
+contract_dir = os.path.join(base_dir, 'contracts')
+contract_file_path = os.path.join(contract_dir, 'AttendanceRecord.sol')
+
+with open(contract_file_path, "r") as file:
     attendance_record_source = file.read()
 
 compiled_sol = compile_standard(
@@ -22,8 +27,11 @@ compiled_sol = compile_standard(
     solc_version="0.8.0",
 )
 
+compiled_dir = os.path.join(base_dir, 'compiled')
+compiled_file_path = os.path.join(compiled_dir, 'AttendanceRecord.json')
+
 # Save the compiled contract to a JSON file
-with open("/Users/shashrestha/Documents/Shasank/Production Project/Production-Project/faceDetection/src/blockchain/compiled/AttendanceRecord.json", "w") as f:
+with open(compiled_file_path, "w") as f:
     json.dump(compiled_sol, f, indent=2)
 
 print("Contract compiled successfully!")

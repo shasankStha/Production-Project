@@ -1,4 +1,4 @@
-import React, { useState,useRef,useEffect } from "react";
+import React, { useState,useRef,useEffect, useCallback } from "react";
 import axios from "axios";
 import { getToken } from "../utils/Auth";
 import "../styles/UserChangePassword.css";
@@ -70,19 +70,24 @@ const UserChangePassword = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleOutsideClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-    }
-  };
+  const handleOutsideClick = useCallback(
+    (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
   useEffect(() => {
     if (isOpen) {
       document.addEventListener("mousedown", handleOutsideClick);
     } else {
       document.removeEventListener("mousedown", handleOutsideClick);
     }
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [isOpen]);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isOpen, handleOutsideClick]);
 
   if (!isOpen) return null;
 

@@ -9,7 +9,7 @@ from flask import current_app
 
 def insert_attendance(username, summary_id,db):
     try:
-        print("[INFO] Attendance started!!!")
+        # print("[INFO] Attendance started!!!")
         user = db.session.query(User).filter_by(username=username).first()
         if not user:
             raise ValueError(f"User with username {username} not found.")

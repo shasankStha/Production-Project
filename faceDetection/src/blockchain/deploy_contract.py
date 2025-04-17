@@ -7,10 +7,15 @@ load_dotenv()
 
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
 assert w3.is_connected(), "Failed to connect to Ganache!"
-
 w3.eth.default_account = os.getenv('GANACHE_ADDRESS')
 
-with open("/Users/shashrestha/Documents/Shasank/Production Project/Production-Project/faceDetection/src/blockchain/compiled/AttendanceRecord.json", "r") as file:
+#Managing file paths
+base_dir = os.path.dirname(os.path.abspath(__file__))
+compiled_dir = os.path.join(base_dir, 'compiled')
+compiled_file_path = os.path.join(compiled_dir, 'AttendanceRecord.json')
+deployed_file_path = os.path.join(compiled_dir, 'deployed_AttendanceRecord.json')
+
+with open(compiled_file_path, "r") as file:
     compiled_contract = json.load(file)
 
 bytecode = compiled_contract["contracts"]["AttendanceRecord.sol"]["AttendanceRecord"]["evm"]["bytecode"]["object"]
@@ -28,5 +33,5 @@ deployed_data = {
     "address": contract_address,
     "abi": abi
 }
-with open("/Users/shashrestha/Documents/Shasank/Production Project/Production-Project/faceDetection/src/blockchain/compiled/deployed_AttendanceRecord.json", "w") as f:
+with open(deployed_file_path, "w") as f:
     json.dump(deployed_data, f, indent=2)

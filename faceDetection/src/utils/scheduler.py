@@ -6,7 +6,7 @@ from src.utils.extensions import scheduler
 
 def schedule_ipfs_store(app):
     """Triggers storing attendance data in IPFS and blockchain at a specific time."""
-    with app.app_context():  # Ensure Flask context is available
+    with app.app_context():
         today_str = datetime.today().strftime('%Y-%m-%d')
         store_attendance_ipfs(today_str)
 

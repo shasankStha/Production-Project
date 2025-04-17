@@ -13,7 +13,7 @@ from src.utils.extensions import thread_pool
 from src.services.attendance import insert_attendance, get_or_create_attendance_summary
 from config.config import (
     CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH,
-    RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL,IMG_JPEG_QUALITY, RECOGITION_TIMEOUT
+    RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL,IMG_JPEG_QUALITY, CLASSNAMES
 )
 
 last_recognition_time = time.time()
@@ -92,6 +92,8 @@ def generate_frames(attendance:False,app,db):
             if not success:
                 break
 
+            #fix mirror effect
+            frame = cv2.flip(frame, 1)
             frame, bboxs = detector.findFaces(frame, draw=False)
 
             if len(bboxs) > 0:
@@ -109,7 +111,7 @@ def generate_frames(attendance:False,app,db):
                 # Spoofing detection
                 spoofing_test, conf = identify_real_or_fake(frame)
                 face_roi = frame[y:y+h, x:x+w]
-                if spoofing_test in ['fake', 'real']:
+                if spoofing_test in CLASSNAMES:
                     color = (0, 255, 0) if spoofing_test == "real" else (0, 0, 255)
                     cv2.putText(frame, f"{spoofing_test.upper()} {int(conf * 100)}%", (50, 50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)

@@ -8,8 +8,11 @@ load_dotenv()
 def get_attendance(record_id):
     w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
     assert w3.is_connected(), "Failed to connect to Ganache!"
-
-    with open("/Users/shashrestha/Documents/Shasank/Production Project/Production-Project/faceDetection/src/blockchain/compiled/deployed_AttendanceRecord.json", "r") as f:
+    #Manage file path
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    compiled_dir = os.path.join(base_dir, 'compiled')
+    deployed_file_path = os.path.join(compiled_dir, 'deployed_AttendanceRecord.json')
+    with open(deployed_file_path, "r") as f:
         deployed_data = json.load(f)
 
     contract_address = deployed_data["address"]

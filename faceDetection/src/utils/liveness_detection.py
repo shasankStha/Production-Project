@@ -44,8 +44,7 @@ def detect_motion(frame):
     if prev_landmarks is None:
         prev_landmarks = face_points
         return False
-
-    # Calculate total movement by summing Euclidean distances between corresponding points
+    #total movement calculation summing the euclidean distances between corresponding points
     total_motion = sum(
         math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         for (x1, y1), (x2, y2) in zip(prev_landmarks, face_points)
