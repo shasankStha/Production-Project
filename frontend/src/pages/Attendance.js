@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import "../styles/Attendance.css";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import VideoFeed from "../components/VideoFeed";
 
 const Attendance = () => {
@@ -22,8 +22,7 @@ const Attendance = () => {
 
   return (
     <div className="home-container">
-      <Sidebar />
-
+      <Header title="Take Attendance" />
       <div className="video-wrapper">
         {/* Show live stream in attendance mode (always reflects attendanceActive) */}
         <VideoFeed attendance={attendanceActive} />

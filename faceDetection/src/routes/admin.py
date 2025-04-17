@@ -154,9 +154,7 @@ def get_attendance_records_by_date(attendance_date):
                     "time": record["timestamp"]
                 })
 
-        response = make_response(jsonify({"success": True, "attendance_records": records}))
-        response.headers["Cache-Control"] = "public, max-age=300"
-        return response
+        return jsonify({"success": True, "attendance_records": records})
     
     except Exception as e:
         print(f"[ERROR] Failed to fetch attendance records for date {attendance_date}: {str(e)}")

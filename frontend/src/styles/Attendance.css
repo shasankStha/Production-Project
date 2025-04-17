@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px;
   background: linear-gradient(135deg, #dbeafe, #f0f4f8);
   color: #333;
   min-height: 100vh;
@@ -12,24 +11,17 @@
   text-align: center;
 }
 
-/* Heading styling */
-.home-container h2 {
-  font-size: 28px;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
 
 /* Video container styles */
 .video-wrapper {
-  width: 80%;
+  width: 75%;
   display: flex;
   justify-content: center;
   background: white;
   padding-bottom: 10px;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .video-wrapper > .video-container {
@@ -41,6 +33,7 @@
   background-color: #f9fafb;
   border-radius: 10px;
   box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+  margin-top: -1rem;
 }
 
 .video-feed {
@@ -54,7 +47,6 @@
 .attendance-controls {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
   width: 100%;
 }
 

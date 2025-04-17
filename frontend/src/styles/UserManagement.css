@@ -1,21 +1,4 @@
-.user-management-container {
-    padding: 30px;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-  }
-  
-  .user-management-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: #1e40af;
-  }
-  h1{
-    text-align: center;
-  }
-  
+
   .user-table {
     width: 100%;
     border-collapse: collapse;
@@ -134,13 +117,15 @@
   
   .dashboard-container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
   }
   
   .main-content {
     flex: 1;
-    padding: 2rem;
+    padding: 1.5rem;
     background-color: #f9f9f9;
+    margin-top:-1rem;
   }
   
   .edit-modal {

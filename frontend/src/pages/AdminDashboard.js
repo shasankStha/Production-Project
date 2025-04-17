@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -17,7 +17,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Register the necessary chart components
 ChartJS.register(
   BarElement,
   CategoryScale,
@@ -30,7 +29,6 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  // State declarations
   const [attendanceSummarySet, setAttendanceSummarySet] = useState(new Set());
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -358,9 +356,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar Navigation */}
-      <Sidebar />
-      <h2 className="admin-dashboard-title">Admin Dashboard</h2>
+      <Header title="Admin Dashboard" />
       <div className="dashboard-grid">
         {/* Calendar Cell */}
         <div className="dashboard-cell calendar-cell">

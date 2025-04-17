@@ -1,6 +1,5 @@
 /* Attendance Records Page Styles */
 .attendance-records-container {
-    padding: 30px;
     background: linear-gradient(135deg, #f0f4f8, #dbeafe);
     color: #333;
     display: flex;
@@ -8,12 +7,6 @@
     align-items: center;
   }
   
-  .attendance-records-container h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #1e40af;
-  }
   
   .search-box {
     background: white;

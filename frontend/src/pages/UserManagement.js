@@ -4,7 +4,7 @@ import UserTable from "../components/UserTable";
 import EditUserModal from "../components/EditUserModal";
 import { getToken } from "../utils/Auth";
 import "../styles/UserManagement.css";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -64,9 +64,8 @@ const UserManagement = () => {
 
   return (
     <div className="dashboard-container">
-      <Sidebar />
+      <Header title="Manage User" />
       <div className="main-content">
-        <h1 className="text-2xl font-bold mb-4">User Management</h1>
         <UserTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
         {editingUser && (
           <EditUserModal

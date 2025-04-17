@@ -35,5 +35,5 @@ export const isAdmin = () => {
   const token = getToken();
   if (!token) return false;
   const decoded = decodeToken(token);
-  return decoded?.sub?.role === "admin";
+  return decoded?.role === "admin";
 };

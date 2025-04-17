@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import "../styles/AttendanceRecords.css";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement);
 
@@ -61,8 +61,7 @@ const AttendanceRecords = () => {
 
   return (
     <div className="attendance-records-container">
-      <Sidebar />
-      <h2>Attendance Records</h2>
+      <Header title="Attendance Records" />
       <div className="search-box">
         <input
           type="text"

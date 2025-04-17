@@ -38,8 +38,13 @@ def delete_user(user_id):
     user = User.query.get(user_id)
     if not user or user.status == 0:
         return jsonify({"message": "User not found"}), 404
+    
+    old_email = user.email
+    old_username = user.username
 
     user.status = 0
+    user.email = str(user_id)+old_email
+    user.username = str(user_id)+old_username
     db.session.commit()
 
     remove_user_from_model(f"{user.username}.{user.first_name} {user.last_name}")

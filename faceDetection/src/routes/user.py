@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, make_response
+from flask import Blueprint, jsonify, make_response, request
 from src.models.attendance_summary import AttendanceSummary
 from src.models.attendance import Attendance
 from src.models.blockchain_record import BlockchainRecord

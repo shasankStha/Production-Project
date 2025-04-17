@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import VideoFeed from "../components/VideoFeed";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import "../styles/Register.css";
 
 const socket = io("http://127.0.0.1:5000");
@@ -58,10 +58,8 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      <Sidebar />
-
       <div className="register-content">
-        <h2 className="register-heading">Register User</h2>
+      <Header title="Register" />
 
         <div className="register-main">
           <div className="register-video">
