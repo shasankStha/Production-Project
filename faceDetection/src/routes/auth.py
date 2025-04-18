@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import create_access_token
 from src.models.user import User
-from src.utils.extensions import db
+from src.utils.extensions import db,mail
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_mail import Message
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -48,3 +49,38 @@ def change_password():
     except Exception as e:
         print(f"[ERROR] Changing password: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@auth_bp.route("/forgot_password", methods=["POST"])
+def forgot_password():
+    data = request.get_json()
+    email = data.get("email")
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        token = user.generate_reset_token()
+        reset_link = f"http://localhost:3000/reset-password/{token}"
+
+        # Send email
+        msg = Message("Reset Your Password",
+                      recipients=[email],
+                      body=f"Click the link to reset your password: {reset_link}")
+        mail.send(msg)
+
+    return jsonify({"message": "If the email exists, a reset link was sent."}), 200
+
+
+
+
+@auth_bp.route("/reset_password/<token>", methods=["POST"])
+def reset_password(token):
+    data = request.get_json()
+    new_password = data.get("new_password")
+
+    user = User.verify_reset_token(token)
+    if not user:
+        return jsonify({"success": False, "message": "Invalid or expired token"}), 400
+
+    user.set_password(new_password)
+    db.session.commit()
+    return jsonify({"success": True, "message": "Password reset successful"}), 200

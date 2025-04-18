@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Login.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +12,10 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const successMessage = location.state?.successMessage;
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +28,9 @@ const Login = () => {
       });
 
       login(response.data.access_token);
-      navigate(response.data.role === "admin" ? "/admin-dashboard" : "/user-dashboard");
+      navigate(
+        response.data.role === "admin" ? "/admin-dashboard" : "/user-dashboard"
+      );
     } catch (error) {
       setError("Invalid credentials. Please try again.");
     }
@@ -44,17 +52,33 @@ const Login = () => {
             />
           </div>
           <div className="input-group">
+            <div className="password-group">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               required
             />
+            <span
+              className="toggle-eye"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <FaEyeSlash/> : <FaEye/>}
+            </span>
+            </div>
           </div>
+          <p
+            className="forgot-password"
+            onClick={() => navigate("/forgot-password")}
+          >
+            Forgot Password?
+          </p>
+
           <button type="submit">Login</button>
           {error && <p className="error-message">{error}</p>}
         </form>
+        {successMessage && <p className="success-message">{successMessage}</p>}
       </div>
     </div>
   );
