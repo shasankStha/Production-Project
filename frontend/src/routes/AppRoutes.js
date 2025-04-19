@@ -48,7 +48,9 @@ function AppRoutes() {
         <Route
           path="/attendance-records"
           element={
-            user?.role === "admin" ? (
+            user === undefined ? (
+              <div>Loading...</div>
+            ) : user?.role === "admin" ? (
               <AttendanceRecords />
             ) : (
               <Navigate to="/login" />

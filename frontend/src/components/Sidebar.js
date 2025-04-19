@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaTimes,
@@ -14,12 +14,30 @@ import "../styles/Sidebar.css";
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  // const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     onClose();  
     navigate("/login");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        !event.target.closest(".sidebar") &&
+        !event.target.closest(".hamburger-menu")
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>

@@ -8,6 +8,7 @@ import { Bar, Line, Pie } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
+  ArcElement,
   BarElement,
   CategoryScale,
   LinearScale,
@@ -18,6 +19,7 @@ import {
 } from "chart.js";
 
 ChartJS.register(
+  ArcElement,
   BarElement,
   CategoryScale,
   LinearScale,
@@ -27,6 +29,7 @@ ChartJS.register(
   Legend,
   ChartDataLabels
 );
+
 
 const AdminDashboard = () => {
   const [attendanceSummarySet, setAttendanceSummarySet] = useState(new Set());
@@ -185,12 +188,10 @@ const AdminDashboard = () => {
    * @returns {string} - Start of week in YYYY-MM-DD format.
    */
   const getStartOfWeek = (date) => {
-    const startOfWeek = new Date(date);
-    const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
-    startOfWeek.setDate(diff);
-    startOfWeek.setHours(0, 0, 0, 0);
-    return startOfWeek.toISOString().split("T")[0];
+    const d = new Date(date);
+  const day = d.getDay(); 
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); 
+  return new Date(d.setDate(diff)).toISOString().split('T')[0];
   };
 
   /**
@@ -200,27 +201,42 @@ const AdminDashboard = () => {
    */
   const groupByWeek = (data) => {
     const grouped = {};
+  
     data.forEach((entry) => {
       const date = new Date(entry.date);
-      const year = date.getFullYear();
-      const week = Math.ceil(
-        ((date - new Date(year, 0, 1)) / 86400000 +
-          new Date(year, 0, 1).getDay() +
-          1) /
-          7
-      );
-      const key = `${year}-W${week}`;
-      if (!grouped[key]) {
-        grouped[key] = {
-          label: getStartOfWeek(date),
+      const weekStart = getStartOfWeek(date);
+  
+      if (!grouped[weekStart]) {
+        grouped[weekStart] = {
+          label: formatWeekLabel(weekStart),
           total: 0,
           days: [],
         };
       }
-      grouped[key].total += entry.total_attendance;
-      grouped[key].days.push(entry);
+  
+      grouped[weekStart].total += entry.total_attendance;
+      grouped[weekStart].days.push(entry);
     });
-    return Object.values(grouped);
+  
+    // Sort by weekStart and return last 5 weeks
+    const sortedWeeks = Object.entries(grouped)
+      .sort(([a], [b]) => new Date(a) - new Date(b))
+      .slice(-5) // get last 5 weeks only
+      .map(([, value]) => value);
+  
+    return sortedWeeks;
+  };
+  
+  const formatWeekLabel = (startDateStr) => {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
+  
+    const options = { month: "short", day: "numeric" };
+    const startLabel = startDate.toLocaleDateString(undefined, options);
+    const endLabel = endDate.toLocaleDateString(undefined, options);
+  
+    return `${startLabel} – ${endLabel}`;
   };
 
   // Prepare weekly grouped data for the line chart.
@@ -453,6 +469,15 @@ const AdminDashboard = () => {
                       position: "bottom",
                     },
                   },
+                  onClick: (evt, elements) => {
+                    if (!elements.length) return;
+                    const index = elements[0].index;
+                    const selectedUser = topAttendees[index];
+                    if (selectedUser && selectedUser.name) {
+                      window.location.href = `/attendance-records?name=${encodeURIComponent(selectedUser.name)}`;
+                    }
+                  },
+                  
                 }}
               />
             </div>

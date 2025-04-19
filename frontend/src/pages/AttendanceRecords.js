@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import "../styles/AttendanceRecords.css";
 import Header from "../components/Header";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement } from 'chart.js';
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement);
+import { useLocation } from "react-router-dom";           
 
 const AttendanceRecords = () => {
+  const location = useLocation(); 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchStartDate, setSearchStartDate] = useState("");
   const [searchEndDate, setSearchEndDate] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [attendanceSummary, setAttendanceSummary] = useState([]);
+
+  const [urlName, setUrlName] = useState("");
+
 
   useEffect(() => {
     if (!searchStartDate && !searchEndDate) {
@@ -38,6 +41,22 @@ const AttendanceRecords = () => {
       fetchAttendanceSummary();
     }
   }, [searchStartDate, searchEndDate]);
+
+  useEffect(() => {
+    const nameParam = new URLSearchParams(location.search).get("name");
+    if (nameParam && searchStartDate && searchEndDate) {
+      setSearchQuery(nameParam);
+      performSearch(nameParam);
+    }
+  }, [location.search, searchStartDate, searchEndDate]);
+
+  useEffect(() => {
+    const nameParam = new URLSearchParams(location.search).get("name");
+    if (nameParam) {
+      setUrlName(nameParam);
+      setSearchQuery(nameParam);
+    }
+  }, [location.search]);
 
   const performSearch = async () => {
     setSearchLoading(true);
