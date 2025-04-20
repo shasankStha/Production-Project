@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
+import { getToken } from "../utils/Auth";
 import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import Header from "../components/Header";
 import "../styles/AttendanceRecords.css";
+
 
 const AttendanceRecords = () => {
   const location = useLocation();
@@ -17,9 +19,11 @@ const AttendanceRecords = () => {
     if (!searchStartDate && !searchEndDate) {
       (async () => {
         try {
+          const token = getToken();
           const res = await fetch(
-            "http://localhost:5000/admin/attendance_summary"
-          );
+            "http://localhost:5000/admin/attendance_summary",{
+              headers: { Authorization: `Bearer ${token}` },
+            });
           const data = await res.json();
           if (data.success) {
             const sorted = data.attendance_summary.sort(

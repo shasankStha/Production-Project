@@ -11,7 +11,7 @@
   
   .user-table th,
   .user-table td {
-    padding: 12px 16px;
+    padding: 8px 12px;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
   }
@@ -125,7 +125,7 @@
     flex: 1;
     padding: 1.5rem;
     background-color: #f9f9f9;
-    margin-top:-1rem;
+    margin-top:-3.5rem;
   }
   
   .edit-modal {
@@ -181,5 +181,31 @@
   .error-text {
     color: red;
     margin-bottom: 0.5rem;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .pagination-controls button {
+    padding: 6px 12px;
+    background-color: #2563eb;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .pagination-controls button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .pagination-controls button.active {
+    background-color: #1e40af;
+    color: white;
   }
   

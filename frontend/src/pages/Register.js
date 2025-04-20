@@ -11,7 +11,6 @@ const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,14 +25,12 @@ const Register = () => {
   }, []);
 
   const registerUser = async () => {
-    if (!username || !firstName || !lastName || !email || !password) {
+    if (!username || !firstName || !lastName || !email) {
       setMessage("All fields are required!");
       return;
     }
-
     setLoading(true);
     setMessage("");
-
     try {
       const response = await fetch("http://127.0.0.1:5000/register", {
         method: "POST",
@@ -42,11 +39,9 @@ const Register = () => {
           username,
           first_name: firstName,
           last_name: lastName,
-          email,
-          password,
+          email
         }),
       });
-
       const data = await response.json();
       setMessage(data.message || data.error);
     } catch (error) {
@@ -67,6 +62,7 @@ const Register = () => {
           </div>
 
           <div className="register-form">
+            <h2>Fill this form</h2>
             <div className="form-group">
               <label>Username</label>
               <input
@@ -103,16 +99,6 @@ const Register = () => {
                 placeholder="Enter email"
               />
             </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-              />
-            </div>
-
             <button
               className="register-button"
               onClick={registerUser}

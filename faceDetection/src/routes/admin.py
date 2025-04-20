@@ -108,8 +108,13 @@ def store_attendance():
     
 
 @admin_bp.route("/attendance_summary", methods=["GET"])
+@jwt_required()
 def get_attendance_summary():
     try:
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+        if user.role!="admin":
+            return jsonify({"success": False, "error": "Invalid User"}), 404
         attendance_summary = db.session.query(AttendanceSummary.attendance_date).all()
 
         summary_data = [record.attendance_date.strftime("%Y-%m-%d") for record in attendance_summary]
@@ -121,8 +126,13 @@ def get_attendance_summary():
 
 
 @admin_bp.route("/attendance_records/<attendance_date>", methods=["GET"])
+@jwt_required()
 def get_attendance_records_by_date(attendance_date):
     try:
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+        if user.role!="admin":
+            return jsonify({"success": False, "error": "Invalid User"}), 404
         attendance_data = retrieve_attendance_summary_and_data(attendance_date)
     
         if "error" in attendance_data or not attendance_data:

@@ -4,6 +4,7 @@ import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/AdminDashboard.css";
+import { getToken } from "../utils/Auth";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
@@ -29,6 +30,7 @@ ChartJS.register(
   Legend,
   ChartDataLabels
 );
+
 
 
 const AdminDashboard = () => {
@@ -89,7 +91,10 @@ const AdminDashboard = () => {
    */
   const fetchAttendanceSummary = async () => {
     try {
-      const res = await fetch("http://localhost:5000/admin/attendance_summary");
+      const token = getToken();
+      const res = await fetch("http://localhost:5000/admin/attendance_summary",{
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (data.success) {
         setAttendanceSummarySet(new Set(data.attendance_summary));
@@ -106,8 +111,11 @@ const AdminDashboard = () => {
   const fetchAttendanceDetails = async (attendanceDate) => {
     setLoading(true);
     try {
+      const token = getToken();
       const response = await fetch(
-        `http://localhost:5000/admin/attendance_records/${attendanceDate}`
+        `http://localhost:5000/admin/attendance_records/${attendanceDate}`,{
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const data = await response.json();
       if (data.success) {

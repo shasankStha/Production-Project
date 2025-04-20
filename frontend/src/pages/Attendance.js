@@ -24,7 +24,6 @@ const Attendance = () => {
     <div className="home-container">
       <Header title="Take Attendance" />
       <div className="video-wrapper">
-        {/* Show live stream in attendance mode (always reflects attendanceActive) */}
         <VideoFeed attendance={attendanceActive} />
       </div>
 

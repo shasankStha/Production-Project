@@ -9,6 +9,8 @@ import Header from "../components/Header";
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const USERS_PER_PAGE = 8;
 
   const fetchUsers = async () => {
     try {
@@ -16,7 +18,10 @@ const UserManagement = () => {
       const res = await axios.get("http://localhost:5000/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUsers(res.data.users);
+      const sortedUsers = res.data.users.sort((a, b) =>
+        a.first_name.localeCompare(b.first_name)
+      );
+      setUsers(sortedUsers);
     } catch (error) {
       console.error("Failed to fetch users", error);
     }
@@ -62,11 +67,42 @@ const UserManagement = () => {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE
+  );
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   return (
     <div className="dashboard-container">
       <Header title="Manage User" />
       <div className="main-content">
-        <UserTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
+        <UserTable users={paginatedUsers} onEdit={handleEdit} onDelete={handleDelete} />
+        
+        {/* Pagination Controls */}
+        <div className="pagination-controls">
+          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+            Prev
+          </button>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goToPage(i + 1)}
+              className={currentPage === i + 1 ? "active" : ""}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
+
         {editingUser && (
           <EditUserModal
             user={editingUser}

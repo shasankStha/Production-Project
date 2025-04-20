@@ -27,7 +27,6 @@ const UserDashboard = () => {
       console.error("Error fetching attendance dates:", err);
     }
   };
-
   const getMetrics = () => {
     const presentDays = attendanceDates.length;
     const percentage = totalSessions > 0 ? ((presentDays / totalSessions) * 100).toFixed(2) : 0;
