@@ -25,9 +25,10 @@
   }
   
   .attendance-results {
-    margin-top: 20px;
-    max-width: 100%;
+    margin-top: -16px;
+    max-width: 90%;
     width: 100%;
+    
   }
   
   .attendance-table-container {
@@ -67,4 +68,16 @@
   
   .search-box button{
     color: #FFFFFF;
+  }
+
+  .search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .search-box label {
+    margin-left: 0.5rem;
+    font-weight: 500;
   }

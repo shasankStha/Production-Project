@@ -13,10 +13,11 @@ from src.utils.extensions import thread_pool
 from src.services.attendance import insert_attendance, get_or_create_attendance_summary
 from config.config import (
     CAM_WIDTH, CAM_HEIGHT, OFFSET_PERCENTAGE_W, OFFSET_PERCENTAGE_H, MODEL_PATH,
-    RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL,IMG_JPEG_QUALITY, CLASSNAMES
+    RECOGNITION_THRESHOLD, RECOGNITION_INTERVAL,IMG_JPEG_QUALITY, CLASSNAMES, RECOGITION_TIMEOUT
 )
 
 last_recognition_time = time.time()
+recognition_start_time = 0
 
 # device = 'cpu'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -121,22 +122,28 @@ def generate_frames(attendance:False,app,db):
                     if spoofing_test == 'real' and attendance:
                         if frame_counter % RECOGNITION_INTERVAL == 0:
                             def update_recognition():
-                                global last_identified_person
-                                if not is_attendance_active:
+                                global last_identified_person, recognition_start_time
+                                if not is_attendance_active and not face_roi:
                                     return
                                 identified = identify_face(face_roi)
+                                current_time = time.time()
+
                                 with lock:
-                                    last_identified_person = identified
+                                    if identified:
+                                        if last_identified_person == identified:
+                                            if recognition_start_time and (current_time - recognition_start_time >= RECOGITION_TIMEOUT):
+                                                with app.app_context():
+                                                    name = identified.split(".")[1]
+                                                    # print("Attendance Started", name)
+                                                    if not insert_attendance(username=identified.split(".")[0], summary_id=summary.summary_id, db=db):
+                                                        print(f"[Error] Attendance for {name}.")
+                                                recognition_start_time = None
+                                                last_identified_person = None
+                                        else:    
+                                            last_identified_person = identified
+                                            recognition_start_time = current_time
+
                             thread_pool.submit(update_recognition)
-
-                        if app is not None and last_identified_person:
-                            with app.app_context():
-                                name = last_identified_person.split(".")[1]
-                                if is_attendance_active and not insert_attendance(username=last_identified_person.split(".")[0],
-                                                        summary_id=summary.summary_id,
-                                                        db=db):
-                                    print(f"[Error] Attendance for {name}.")
-
 
                         with lock:
                             if last_identified_person:

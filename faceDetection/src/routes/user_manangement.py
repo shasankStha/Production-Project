@@ -41,13 +41,13 @@ def delete_user(user_id):
     
     old_email = user.email
     old_username = user.username
+    remove_user_from_model(f"{user.username}.{user.first_name} {user.last_name}")
 
     user.status = 0
     user.email = str(user_id)+old_email
     user.username = str(user_id)+old_username
     db.session.commit()
 
-    remove_user_from_model(f"{user.username}.{user.first_name} {user.last_name}")
 
     return jsonify({"success": True, "message": "User soft-deleted"})
 

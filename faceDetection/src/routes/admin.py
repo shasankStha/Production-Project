@@ -114,9 +114,7 @@ def get_attendance_summary():
 
         summary_data = [record.attendance_date.strftime("%Y-%m-%d") for record in attendance_summary]
         
-        response = make_response(jsonify({"success": True, "attendance_summary": summary_data}))
-        response.headers["Cache-Control"] = "public, max-age=300"
-        return response
+        return jsonify({"success": True, "attendance_summary": summary_data})
     except Exception as e:
         print(f"[ERROR] Failed to fetch attendance summary: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
