@@ -4,6 +4,7 @@ from src.models.attendance import Attendance
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 import os
+from datetime import date
 
 load_dotenv()
 
@@ -18,6 +19,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     status = db.Column(db.Integer, default=1)
     role = db.Column(db.String, nullable=False, default="user")
+    created_at = db.Column(db.DateTime, default=date.today())
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')

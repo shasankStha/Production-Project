@@ -23,16 +23,23 @@ def get_user_attendance_dates():
 
         blockchain_record = BlockchainRecord.query.all()
         attended_dates = []
-        total_attendance_days = len(blockchain_record)
+        total_attendance_days = 0
+
+        user_created_date = user.created_at.date()
 
         for row in blockchain_record:
             if row.blockchain_record_id:
                 record = get_attendance(row.blockchain_record_id)
                 attendance_data = json.loads(ipfs_get_data(record.get("cid")))
-                if "attendance_records" in attendance_data:
+
+                record_date_str = attendance_data.get("date")
+                record_date = datetime.strptime(record_date_str, "%Y-%m-%d").date()
+
+                if record_date >= user_created_date and "attendance_records" in attendance_data:
                     for rec in attendance_data["attendance_records"]:
                         if int(rec["user_id"]) == int(user_id):
-                            attended_dates.append(str(attendance_data.get("date")))
+                            attended_dates.append(record_date_str)
+                            total_attendance_days += 1
                             break
 
         today_str = date.today().isoformat()
@@ -50,21 +57,19 @@ def get_user_attendance_dates():
                 .first()
             )
 
-            if today_attendance:
-                total_attendance_days+=1
+            if today_attendance and date.today() >= user_created_date:
                 attended_dates.append(today_str)
+                total_attendance_days += 1
                 source = "postgres"
                 disclaimer = "Today's attendance data is from Postgres and not yet recorded on the blockchain."
 
-        response = make_response(jsonify({
+        return jsonify({
             "success": True,
             "total_attendance_days": total_attendance_days,
-            "attendance_dates": list(attended_dates),
+            "attendance_dates": attended_dates,
             "source": source,
             "disclaimer": disclaimer
-        }))
-        response.headers["Cache-Control"] = "public, max-age=300"
-        return response
+        })
 
     except Exception as e:
         print(f"[ERROR] Fetching attendance dates for user: {str(e)}")
