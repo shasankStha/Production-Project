@@ -5,6 +5,7 @@ import AdminAttendanceTable from "../components/AdminAttendanceTable";
 import Header from "../components/Header";
 import "../styles/AttendanceRecords.css";
 
+const RECORDS_PER_PAGE = 8;
 
 const AttendanceRecords = () => {
   const location = useLocation();
@@ -15,15 +16,19 @@ const AttendanceRecords = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     if (!searchStartDate && !searchEndDate) {
       (async () => {
         try {
           const token = getToken();
           const res = await fetch(
-            "http://localhost:5000/admin/attendance_summary",{
+            "http://localhost:5000/admin/attendance_summary",
+            {
               headers: { Authorization: `Bearer ${token}` },
-            });
+            }
+          );
           const data = await res.json();
           if (data.success) {
             const sorted = data.attendance_summary.sort(
@@ -39,6 +44,7 @@ const AttendanceRecords = () => {
       })();
     }
   }, [searchStartDate, searchEndDate]);
+
   const performSearch = useCallback(
     async (query) => {
       setSearchLoading(true);
@@ -48,7 +54,12 @@ const AttendanceRecords = () => {
         )}&start_date=${searchStartDate}&end_date=${searchEndDate}`;
         const res = await fetch(url);
         const data = await res.json();
-        setSearchResults(data.success ? data.attendance_records : []);
+        if (data.success) {
+          setSearchResults(data.attendance_records);
+          setCurrentPage(1); // Reset to first page on new search
+        } else {
+          setSearchResults([]);
+        }
       } catch (err) {
         console.error("Error during search:", err);
         setSearchResults([]);
@@ -62,10 +73,22 @@ const AttendanceRecords = () => {
   useEffect(() => {
     const nameParam = new URLSearchParams(location.search).get("name");
     if (nameParam && searchStartDate && searchEndDate) {
-      setSearchQuery(nameParam); 
+      setSearchQuery(nameParam);
       performSearch(nameParam);
     }
   }, [location.search, searchStartDate, searchEndDate, performSearch]);
+
+  const totalPages = Math.ceil(searchResults.length / RECORDS_PER_PAGE);
+  const paginatedResults = searchResults.slice(
+    (currentPage - 1) * RECORDS_PER_PAGE,
+    currentPage * RECORDS_PER_PAGE
+  );
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className="attendance-records-container">
@@ -78,24 +101,27 @@ const AttendanceRecords = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        
-        <label htmlFor="startDate">Start Date:</label>
-        <input
-          type="date"
-          value={searchStartDate}
-          onChange={(e) => setSearchStartDate(e.target.value)}
-          min={attendanceSummary[0]}
-          max={attendanceSummary[attendanceSummary.length - 1]}
-        />
 
-        <label htmlFor="endDate">End Date:</label>
-        <input
-          type="date"
-          value={searchEndDate}
-          onChange={(e) => setSearchEndDate(e.target.value)}
-          min={attendanceSummary[0]}
-          max={attendanceSummary[attendanceSummary.length - 1]}
-        />
+        <div className="date-picker-row">
+          <label htmlFor="startDate">Start Date:</label>
+          <input
+            type="date"
+            value={searchStartDate}
+            onChange={(e) => setSearchStartDate(e.target.value)}
+            min={attendanceSummary[0]}
+            max={attendanceSummary[attendanceSummary.length - 1]}
+          />
+
+          <label htmlFor="endDate">End Date:</label>
+          <input
+            type="date"
+            value={searchEndDate}
+            onChange={(e) => setSearchEndDate(e.target.value)}
+            min={attendanceSummary[0]}
+            max={attendanceSummary[attendanceSummary.length - 1]}
+          />
+        </div>
+
         <button onClick={() => performSearch(searchQuery)}>Search</button>
       </div>
 
@@ -103,7 +129,34 @@ const AttendanceRecords = () => {
         <p>Loading...</p>
       ) : (
         <div className="attendance-results">
-          <AdminAttendanceTable records={searchResults} />
+          <AdminAttendanceTable records={paginatedResults} />
+
+          {/* Pagination Controls */}
+          {searchResults.length > RECORDS_PER_PAGE && (
+            <div className="pagination-controls">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToPage(i + 1)}
+                  className={currentPage === i + 1 ? "active" : ""}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

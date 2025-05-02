@@ -8,6 +8,10 @@
   color: #333;
 }
 
+h3{
+  text-align: center;
+}
+
 /* Grid Layout for Dashboard Cards */
 .dashboard-grid {
   display: grid;

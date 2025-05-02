@@ -34,7 +34,7 @@ LIVENESS_CONFIDENCE = 0.8
 
 # Recognition
 RECOGNITION_INTERVAL = 2 #No of frames
-RECOGNITION_THRESHOLD = 0.7
+RECOGNITION_THRESHOLD = 0.75
 RECOGITION_TIMEOUT = 2 #No of sec to be inserted in database
 
 SCHEDULE_HOUR = 21  # Example: 11 PM
