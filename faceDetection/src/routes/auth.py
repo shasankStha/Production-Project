@@ -67,7 +67,8 @@ def forgot_password():
                       body=f"Click the link to reset your password: {reset_link}")
         mail.send(msg)
 
-    return jsonify({"message": "If the email exists, a reset link was sent."}), 200
+    # Always return this message to prevent revealing user existence
+    return jsonify({"message": "Reset link was sent to the email address"}), 200
 
 
 
