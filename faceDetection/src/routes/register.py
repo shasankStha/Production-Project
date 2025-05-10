@@ -76,7 +76,8 @@ def register_user():
         msg = Message(
             subject="Set Your Password",
             recipients=[email],
-            body=f"Hi {first_name},\n\nYour account has been created. Click the link below to set your password:\n{reset_link}\n\nThank you!"
+            body=f"Hi {first_name},\n\nYour account has been created. Click the link below to set your password:\n{reset_link}\n\nThank you!",
+            html= generateHtmlBody(reset_link=reset_link, first_name=first_name)
         )
         mail.send(msg)
 
@@ -90,3 +91,80 @@ def register_user():
 def generate_random_password(length=12):
     chars = string.ascii_letters + string.digits + string.punctuation
     return ''.join(secrets.choice(chars) for _ in range(length))
+
+
+def generateHtmlBody(reset_link, first_name):
+    return f"""
+        <html>
+            <head>
+                <style>
+                    body {{
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                        color: #333;
+                    }}
+                    .container {{
+                        max-width: 600px;
+                        margin: 30px auto;
+                        background-color: #ffffff;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        padding: 30px;
+                    }}
+                    h2 {{
+                        color: #007bff;
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }}
+                    p {{
+                        font-size: 16px;
+                        line-height: 1.6;
+                        margin: 10px 0;
+                    }}
+                    .button {{
+                        background-color: #FFFFFF;
+                        padding: 12px 20px;
+                        text-decoration: none;
+                        border: 1px solid #007bff;
+                        font-size: 16px;
+                        font-weight: bold;
+                        border-radius: 6px;
+                        display: inline-block;
+                        margin-top: 20px;
+                        transition: background-color 0.3s ease;
+                    }}
+                    .button:link,
+                    .button:visited {{
+                        color: red;
+                        text-decoration: none;
+                    }}
+                    .button:hover {{
+                        background-color: #0056b3;
+                        color: white;
+                    }}
+                    .footer {{
+                        font-size: 14px;
+                        color: #888;
+                        margin-top: 30px;
+                        text-align: center;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h2>Welcome, {first_name}!</h2>
+                    <p>Your account has been created.</p>
+                    <p>To set your password and activate your account, click the button below:</p>
+                    <p><a class="button" href="{reset_link}">Set Password</a></p>
+                    <p>If you did not sign up for this, please ignore this message.</p>
+                    <p>Thanks,<br/>Facial Recognition Attendance System</p>
+                </div>
+                <div class="footer">
+                    <p>If you have any questions, feel free to contact our support team.</p>
+                </div>
+            </body>
+        </html>
+        """
