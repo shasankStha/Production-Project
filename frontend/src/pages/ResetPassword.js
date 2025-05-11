@@ -18,7 +18,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setMessage("Password and Confirm Password do not match.");
       return;
     }
 

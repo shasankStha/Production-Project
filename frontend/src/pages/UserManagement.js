@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UserTable from "../components/UserTable";
 import EditUserModal from "../components/EditUserModal";
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import { getToken } from "../utils/Auth";
 import "../styles/UserManagement.css";
 import Header from "../components/Header";
@@ -9,6 +10,7 @@ import Header from "../components/Header";
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const USERS_PER_PAGE = 8;
 
@@ -31,30 +33,38 @@ const UserManagement = () => {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this user?");
-    if (!confirm) return;
+  const handleEdit = (user) => {
+    setEditingUser(user);
+  };
+
+  const handleDelete = (user) => {
+    setUserToDelete(user);
+  };
+
+  const confirmDelete = async (id) => {
+    console.log(id)
     try {
       const token = getToken();
       await axios.delete(`http://localhost:5000/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      setUserToDelete(null);
       fetchUsers();
     } catch (error) {
       console.error("Error deleting user", error);
     }
   };
 
-  const handleEdit = (user) => {
-    setEditingUser(user);
-  };
-
   const handleUpdate = async (updatedUser) => {
     try {
       const token = getToken();
-      await axios.put(`http://localhost:5000/admin/users/${updatedUser.user_id}`, updatedUser, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `http://localhost:5000/admin/users/${updatedUser.user_id}`,
+        updatedUser,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setEditingUser(null);
       fetchUsers();
     } catch (error) {
@@ -82,11 +92,18 @@ const UserManagement = () => {
     <div className="dashboard-container">
       <Header title="Manage User" />
       <div className="main-content">
-        <UserTable users={paginatedUsers} onEdit={handleEdit} onDelete={handleDelete} />
-        
+        <UserTable
+          users={paginatedUsers}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+
         {/* Pagination Controls */}
         <div className="pagination-controls">
-          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
             Prev
           </button>
           {[...Array(totalPages)].map((_, i) => (
@@ -98,7 +115,10 @@ const UserManagement = () => {
               {i + 1}
             </button>
           ))}
-          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
             Next
           </button>
         </div>
@@ -108,6 +128,14 @@ const UserManagement = () => {
             user={editingUser}
             onClose={() => setEditingUser(null)}
             onSave={handleUpdate}
+          />
+        )}
+
+        {userToDelete && (
+          <DeleteConfirmationModal
+            user={userToDelete}
+            onConfirm={() => confirmDelete(userToDelete)}
+            onCancel={() => setUserToDelete(null)}
           />
         )}
       </div>
